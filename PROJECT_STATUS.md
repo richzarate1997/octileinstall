@@ -30,8 +30,11 @@
 
 - ✅ **DEVELOPMENT_PLAN.md** created and saved (9 phases, Phase 1–8 for launch, Phase 9 post-launch)
 - ✅ Concrete info integrated (phone, hours, logo, about copy)
-- ⏳ Ready for Phase 1 development (skeleton & design system) — any developer can now follow step-by-step
+- ✅ Phases 1–7 built: skeleton, navbar/hero/footer, content sections, gallery + lightbox, tile calculator, service-area map, quote form, SEO/schema/a11y
+- ✅ Phase 8.1–8.2 responsive QA passed at 375/480/768/1024/1440px, no console errors, page weight ~43KB (HTML+CSS+JS, excluding images)
+- ⏳ Phase 8.3 (deploy to GitHub + Netlify) not yet done — requires explicit go-ahead since it pushes to a shared remote
+- ⏳ Phase 9 (AI Design Advisor, real photos, real reviews) intentionally deferred post-launch
 
 ---
 
-**Next step:** Share remaining 3 items (email, days, services) when ready, then Phase 1 can begin.
+**Next step:** Share remaining items when ready — email address, confirmed days of week, final service list, Formspree form ID, confirmed domain, and real photos for the gallery/about section. Say the word when ready to push to GitHub and deploy to Netlify.

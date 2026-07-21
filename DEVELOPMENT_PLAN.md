@@ -164,14 +164,14 @@ Buttons: primary = solid `--color-primary`, white text; hover darkens 10%. Secti
 
 Copy this and check off as you go:
 
-- [ ] 1.1 File structure  - [ ] 1.2 HTML skeleton  - [ ] 1.3 Base CSS
-- [ ] 2.1 Navbar  - [ ] 2.2 Hero  - [ ] 2.3 Footer
-- [ ] 3.1 Services  - [ ] 3.2 About  - [ ] 3.3 Testimonials  - [ ] 3.4 Contact
-- [ ] 4.1 Gallery grid  - [ ] 4.2 Lightbox
-- [ ] 5.1 Calculator  - [ ] 5.2 Service area map
-- [ ] 6.1 Quote form  - [ ] 6.2 Formspree hookup
-- [ ] 7.1–7.5 SEO, schema, a11y
-- [ ] 8.1–8.3 Responsive QA + deploy
+- [x] 1.1 File structure  - [x] 1.2 HTML skeleton  - [x] 1.3 Base CSS
+- [x] 2.1 Navbar  - [x] 2.2 Hero  - [x] 2.3 Footer
+- [x] 3.1 Services  - [x] 3.2 About  - [x] 3.3 Testimonials  - [x] 3.4 Contact
+- [x] 4.1 Gallery grid  - [x] 4.2 Lightbox
+- [x] 5.1 Calculator  - [x] 5.2 Service area map
+- [x] 6.1 Quote form  - [x] 6.2 Formspree hookup (awaiting real FORM_ID)
+- [x] 7.1–7.5 SEO, schema, a11y
+- [x] 8.1–8.2 Responsive QA  - [ ] 8.3 Deploy (needs GitHub push + Netlify connect — awaiting go-ahead)
 - [ ] 9.x Post-launch items
 
 **Open TODOs needed from Richard/Alberto:** phone number, email, final service list, Formspree form ID, domain, logo file, real reviews.

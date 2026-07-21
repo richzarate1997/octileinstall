@@ -62,6 +62,7 @@ p { color: var(--color-ink); }
 
 section {
   padding: var(--section-padding) 0;
+  scroll-margin-top: 76px;
 }
 
 /* ===== Buttons ===== */
