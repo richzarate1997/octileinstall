@@ -90,6 +90,221 @@ section {
 
 .btn:active { transform: scale(0.98); }
 
+/* ===== Navbar ===== */
+#header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.navbar-logo {
+  height: 44px;
+  width: auto;
+  border-radius: 4px;
+}
+
+.navbar-brand-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--color-primary);
+}
+.navbar-brand-text small { font-size: 0.7em; }
+
+.navbar-nav {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.navbar-nav a {
+  font-weight: 500;
+  color: var(--color-ink);
+}
+.navbar-nav a:hover { color: var(--color-accent); }
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.navbar-phone {
+  font-weight: 600;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+.navbar-phone:hover { color: var(--color-accent); }
+
+.navbar-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.navbar-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.navbar-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.navbar-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.navbar-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 768px) {
+  .navbar-toggle { display: flex; }
+
+  .navbar-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-surface);
+    flex-direction: column;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: max-height 0.25s ease;
+  }
+  .navbar-nav.is-open { max-height: 400px; }
+  .navbar-nav a {
+    padding: 16px 24px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .navbar-phone { display: none; }
+}
+
+/* ===== Hero ===== */
+#hero {
+  position: relative;
+  overflow: hidden;
+  padding-top: 96px;
+  padding-bottom: 96px;
+  color: #fff;
+}
+
+.hero-mosaic {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  z-index: 0;
+}
+
+.hero-mosaic span {
+  background: var(--color-primary);
+  animation: mosaic-fade 6s ease-in-out infinite;
+}
+
+@keyframes mosaic-fade {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 0.55; }
+}
+
+#hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(15, 76, 92, 0.92), rgba(10, 57, 69, 0.92));
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+}
+
+.hero-content h1 {
+  color: #fff;
+  font-size: 2.6rem;
+  margin-bottom: 16px;
+}
+
+.hero-subline {
+  color: #f0ede8;
+  font-size: 1.1rem;
+  margin-bottom: 32px;
+}
+
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 { font-size: 1.9rem; }
+}
+
+/* ===== Footer ===== */
+#footer {
+  background: var(--color-primary-dark);
+  color: #f0ede8;
+  padding: 48px 0 24px;
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.footer-brand-text {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.footer-logo { height: 48px; margin-bottom: 8px; }
+
+.footer-brand p { margin-top: 4px; color: #cdd6d8; font-size: 0.9rem; }
+
+.footer-info a { color: #fff; }
+.footer-info a:hover { color: var(--color-accent); }
+.footer-info p { margin-bottom: 4px; }
+
+.footer-copyright {
+  width: 100%;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #a9b7ba;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
 /* ===== Focus states (accessibility) ===== */
 a:focus-visible,
 button:focus-visible,

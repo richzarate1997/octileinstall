@@ -14,12 +14,40 @@
 <body>
 
 <header id="header">
-  <h1>OC Tile Install Inc</h1>
+  <div class="container navbar">
+    <a href="#hero" class="navbar-brand">
+      <img src="images/logo.jpg" alt="OC Tile Install Inc logo" class="navbar-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+      <span class="navbar-brand-text" style="display:none;">OC Tile Install <small>Inc</small></span>
+    </a>
+
+    <nav class="navbar-nav" id="primary-nav">
+      <a href="#services">Services</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#about">About</a>
+      <a href="#calculator">Calculator</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="navbar-actions">
+      <a href="tel:+17146243132" class="navbar-phone">(714) 624-3132</a>
+      <button type="button" class="navbar-toggle" id="navbar-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
 </header>
 
 <main>
   <section id="hero">
-    <h2>Hero</h2>
+    <div class="hero-mosaic" id="hero-mosaic" aria-hidden="true"></div>
+    <div class="container hero-content">
+      <h1>Custom Showers &amp; Tile Work, Built Right</h1>
+      <p class="hero-subline">35+ years of craftsmanship &middot; CA Contractor License #1040037</p>
+      <div class="hero-ctas">
+        <a href="#quote" class="btn btn-accent">Get a Free Quote</a>
+        <a href="tel:+17146243132" class="btn btn-primary">(714) 624-3132</a>
+      </div>
+    </div>
   </section>
   <section id="services">
     <h2>Services</h2>
@@ -48,7 +76,22 @@
 </main>
 
 <footer id="footer">
-  <p>Footer</p>
+  <div class="container footer-content">
+    <div class="footer-brand">
+      <img src="images/logo.jpg" alt="OC Tile Install Inc logo" class="footer-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+      <span class="footer-brand-text" style="display:none;">OC Tile Install Inc</span>
+      <p>CA Contractor License #1040037</p>
+    </div>
+
+    <div class="footer-info">
+      <p><a href="tel:+17146243132">(714) 624-3132</a></p>
+      <p>7:00 AM &ndash; 6:00 PM <!-- TODO: confirm days of week --></p>
+      <p>Serving Orange County, Los Angeles, Inland Empire &amp; San Diego</p>
+      <p><a href="https://instagram.com/octileinstall" target="_blank" rel="noopener">@octileinstall</a></p>
+    </div>
+
+    <p class="footer-copyright">&copy; <span id="current-year"></span> OC Tile Install Inc. All rights reserved.</p>
+  </div>
 </footer>
 
 <script src="js/main.js" defer></script>
