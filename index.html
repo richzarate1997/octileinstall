@@ -176,10 +176,60 @@
     </div>
   </section>
   <section id="service-area">
-    <h2>Service Area</h2>
+    <div class="container">
+      <h2>Service Area</h2>
+      <div class="map-wrap">
+        <canvas id="service-map" width="600" height="500" role="img" aria-label="Map of Southern California service area including Los Angeles, Orange County, Inland Empire, and San Diego"></canvas>
+        <noscript>
+          <ul class="contact-list">
+            <li>Los Angeles</li>
+            <li>Orange County (home base)</li>
+            <li>Inland Empire</li>
+            <li>San Diego</li>
+          </ul>
+        </noscript>
+      </div>
+      <p class="map-caption">Proudly serving all of Southern California.</p>
+    </div>
   </section>
   <section id="calculator">
-    <h2>Tile Calculator</h2>
+    <div class="container">
+      <h2>Tile Calculator</h2>
+      <p class="section-intro">Estimate how much tile you&rsquo;ll need for your project.</p>
+
+      <form class="calculator-form" id="calculator-form" novalidate>
+        <div class="form-row">
+          <label for="calc-length">Area length (ft)</label>
+          <input type="number" id="calc-length" name="length" min="0.1" step="any" required>
+        </div>
+        <div class="form-row">
+          <label for="calc-width">Area width (ft)</label>
+          <input type="number" id="calc-width" name="width" min="0.1" step="any" required>
+        </div>
+        <div class="form-row">
+          <label for="calc-tile-size">Tile size</label>
+          <select id="calc-tile-size" name="tileSize">
+            <option value="1">12&times;12 in</option>
+            <option value="2">12&times;24 in</option>
+            <option value="2.25">18&times;18 in</option>
+            <option value="4">24&times;24 in</option>
+            <option value="0.125">3&times;6 in (subway)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="calc-waste">Waste (%)</label>
+          <input type="number" id="calc-waste" name="waste" min="0" step="any" value="10">
+        </div>
+        <button type="submit" class="btn btn-primary">Calculate</button>
+      </form>
+
+      <p class="calculator-error" id="calculator-error" role="alert"></p>
+
+      <div class="calculator-result" id="calculator-result" hidden>
+        <p><strong id="calc-result-sqft"></strong> sq ft needed</p>
+        <p><strong id="calc-result-tiles"></strong> tiles needed</p>
+      </div>
+    </div>
   </section>
   <section id="testimonials">
     <div class="container">

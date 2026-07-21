@@ -565,6 +565,83 @@ section {
   .contact-grid { grid-template-columns: 1fr; gap: 24px; }
 }
 
+/* ===== Service area map ===== */
+.map-wrap {
+  max-width: 600px;
+  margin: 24px auto 0;
+}
+
+#service-map {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 6 / 5;
+  display: block;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.map-caption {
+  text-align: center;
+  color: var(--color-muted);
+  margin-top: 16px;
+  font-style: italic;
+}
+
+/* ===== Calculator ===== */
+.calculator-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  align-items: end;
+  max-width: 800px;
+  margin-top: 24px;
+}
+
+.form-row { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.form-row label { font-weight: 600; font-size: 0.9rem; }
+.form-row input,
+.form-row select {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.calculator-form .btn { grid-column: span 4; justify-self: start; }
+
+.calculator-error {
+  color: #b3261e;
+  font-weight: 600;
+  margin-top: 16px;
+  min-height: 1.2em;
+}
+
+.calculator-result {
+  margin-top: 24px;
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.calculator-result[hidden] { display: none; }
+.calculator-result p {
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  padding: 20px 28px;
+}
+.calculator-result strong { color: var(--color-primary); font-size: 1.4rem; }
+
+@media (max-width: 768px) {
+  .calculator-form { grid-template-columns: repeat(2, 1fr); }
+  .calculator-form .btn { grid-column: span 2; }
+}
+@media (max-width: 480px) {
+  .calculator-form { grid-template-columns: 1fr; }
+  .calculator-form .btn { grid-column: span 1; width: 100%; }
+}
+
 /* ===== Focus states (accessibility) ===== */
 a:focus-visible,
 button:focus-visible,
