@@ -90,3 +90,77 @@
     if (e.key === 'Escape' && lightbox.classList.contains('is-open')) close();
   });
 })();
+
+// Quote form validation + Formspree submission
+(function () {
+  var form = document.getElementById('quote-form');
+  var messageEl = document.getElementById('quote-form-message');
+  if (!form || !messageEl) return;
+
+  function clearFieldErrors() {
+    form.querySelectorAll('.field-error').forEach(function (el) { el.remove(); });
+  }
+
+  function showFieldError(field, text) {
+    var error = document.createElement('span');
+    error.className = 'field-error';
+    error.textContent = text;
+    field.insertAdjacentElement('afterend', error);
+  }
+
+  function validate() {
+    clearFieldErrors();
+    var valid = true;
+
+    ['name', 'phone', 'message'].forEach(function (fieldName) {
+      var field = form.elements[fieldName];
+      if (!field.value.trim()) {
+        showFieldError(field, 'This field is required.');
+        valid = false;
+      }
+    });
+
+    var email = form.elements.email;
+    if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+      showFieldError(email, 'Please enter a valid email address.');
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (form.elements.company.value) return; // honeypot triggered, silently drop
+
+    if (!validate()) {
+      messageEl.textContent = 'Please fix the errors above.';
+      messageEl.className = 'quote-form-message is-error';
+      return;
+    }
+
+    messageEl.textContent = 'Sending...';
+    messageEl.className = 'quote-form-message';
+
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { Accept: 'application/json' }
+    })
+      .then(function (response) {
+        if (response.ok) {
+          messageEl.textContent = 'Thanks! Your quote request has been sent.';
+          messageEl.className = 'quote-form-message is-success';
+          form.reset();
+        } else {
+          messageEl.textContent = 'Something went wrong. Please call us instead.';
+          messageEl.className = 'quote-form-message is-error';
+        }
+      })
+      .catch(function () {
+        messageEl.textContent = 'Something went wrong. Please call us instead.';
+        messageEl.className = 'quote-form-message is-error';
+      });
+  });
+})();

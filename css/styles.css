@@ -642,6 +642,60 @@ section {
   .calculator-form .btn { grid-column: span 1; width: 100%; }
 }
 
+/* ===== Quote form ===== */
+.quote-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 800px;
+  margin-top: 24px;
+}
+
+.quote-form .form-row--full { grid-column: span 2; }
+
+.quote-form textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  resize: vertical;
+  font-family: inherit;
+}
+
+.form-row--honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.quote-form button[type="submit"] {
+  justify-self: start;
+}
+
+.quote-form .field-error {
+  color: #b3261e;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.quote-form-message {
+  margin-top: 16px;
+  font-weight: 600;
+  min-height: 1.2em;
+}
+.quote-form-message.is-success { color: #1a7d4a; }
+.quote-form-message.is-error { color: #b3261e; }
+
+@media (max-width: 480px) {
+  .quote-form { grid-template-columns: 1fr; }
+  .quote-form .form-row--full { grid-column: span 1; }
+}
+
 /* ===== Focus states (accessibility) ===== */
 a:focus-visible,
 button:focus-visible,

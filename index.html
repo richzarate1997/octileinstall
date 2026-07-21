@@ -254,7 +254,54 @@
     </div>
   </section>
   <section id="quote">
-    <h2>Get a Free Quote</h2>
+    <div class="container">
+      <h2>Get a Free Quote</h2>
+      <p class="section-intro">Tell us about your project and we&rsquo;ll get back to you. Or call/text <a href="tel:+17146243132">(714) 624-3132</a>.</p>
+
+      <!-- TODO: replace FORM_ID with real Formspree endpoint -->
+      <form class="quote-form" id="quote-form" action="https://formspree.io/f/FORM_ID" method="POST" novalidate>
+        <div class="form-row">
+          <label for="quote-name">Name *</label>
+          <input type="text" id="quote-name" name="name" required>
+        </div>
+        <div class="form-row">
+          <label for="quote-phone">Phone *</label>
+          <input type="tel" id="quote-phone" name="phone" required>
+        </div>
+        <div class="form-row">
+          <label for="quote-email">Email</label>
+          <input type="email" id="quote-email" name="email">
+        </div>
+        <div class="form-row">
+          <label for="quote-city">City</label>
+          <input type="text" id="quote-city" name="city">
+        </div>
+        <div class="form-row form-row--full">
+          <label for="quote-project-type">Project Type</label>
+          <select id="quote-project-type" name="projectType">
+            <option value="Custom Shower" selected>Custom Shower</option>
+            <option value="Bathroom Floors & Walls">Bathroom Floors &amp; Walls</option>
+            <option value="Kitchen Backsplashes">Kitchen Backsplashes</option>
+            <option value="Flooring">Flooring &mdash; Tile, Marble &amp; Mosaic</option>
+            <option value="Tub Surrounds">Tub Surrounds</option>
+            <option value="Repairs">Repairs</option>
+          </select>
+        </div>
+        <div class="form-row form-row--full">
+          <label for="quote-message">Message *</label>
+          <textarea id="quote-message" name="message" rows="5" required></textarea>
+        </div>
+
+        <div class="form-row form-row--honeypot" aria-hidden="true">
+          <label for="quote-company">Company</label>
+          <input type="text" id="quote-company" name="company" tabindex="-1" autocomplete="off">
+        </div>
+
+        <button type="submit" class="btn btn-accent form-row--full">Send Quote Request</button>
+      </form>
+
+      <p class="quote-form-message" id="quote-form-message" role="alert"></p>
+    </div>
   </section>
   <section id="contact">
     <div class="container contact-grid">
