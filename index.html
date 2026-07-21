@@ -107,7 +107,57 @@
     </div>
   </section>
   <section id="gallery">
-    <h2>Gallery</h2>
+    <div class="container">
+      <h2>Gallery</h2>
+      <p class="section-intro">A look at recent custom shower and tile installations across Southern California.</p>
+
+      <div class="gallery-grid">
+        <figure class="gallery-item gallery-item--tall" data-caption="Arched hallway mosaic">
+          <img src="images/gallery/01-arched-hallway-mosaic.jpg" alt="Arched hallway mosaic" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.classList.add('is-visible');">
+          <div class="gallery-placeholder"></div>
+          <figcaption>Arched hallway mosaic</figcaption>
+        </figure>
+        <figure class="gallery-item gallery-item--tall" data-caption="Starburst shower feature wall">
+          <img src="images/gallery/02-starburst-shower-wall.jpg" alt="Starburst shower feature wall" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.classList.add('is-visible');">
+          <div class="gallery-placeholder"></div>
+          <figcaption>Starburst shower feature wall</figcaption>
+        </figure>
+        <figure class="gallery-item gallery-item--tall" data-caption="3D geometric shower">
+          <img src="images/gallery/03-3d-geometric-shower.jpg" alt="3D geometric shower" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.classList.add('is-visible');">
+          <div class="gallery-placeholder"></div>
+          <figcaption>3D geometric shower</figcaption>
+        </figure>
+        <figure class="gallery-item gallery-item--square" data-caption="Hexagon floor medallion">
+          <img src="images/gallery/04-hexagon-floor-medallion.jpg" alt="Hexagon floor medallion" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.classList.add('is-visible');">
+          <div class="gallery-placeholder"></div>
+          <figcaption>Hexagon floor medallion</figcaption>
+        </figure>
+        <figure class="gallery-item gallery-item--tall" data-caption="Subway tile shower with niche">
+          <img src="images/gallery/05-subway-shower-niche.jpg" alt="Subway tile shower with niche" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.classList.add('is-visible');">
+          <div class="gallery-placeholder"></div>
+          <figcaption>Subway tile shower with niche</figcaption>
+        </figure>
+        <figure class="gallery-item gallery-item--square" data-caption="Geometric marble floor">
+          <img src="images/gallery/06-geometric-marble-floor.jpg" alt="Geometric marble floor" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.classList.add('is-visible');">
+          <div class="gallery-placeholder"></div>
+          <figcaption>Geometric marble floor</figcaption>
+        </figure>
+        <figure class="gallery-item gallery-item--tall" data-caption="Tub surround with penny tile floor">
+          <img src="images/gallery/07-tub-surround-penny-tile.jpg" alt="Tub surround with penny tile floor" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.classList.add('is-visible');">
+          <div class="gallery-placeholder"></div>
+          <figcaption>Tub surround with penny tile floor</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+      <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+      <div class="lightbox-content">
+        <img id="lightbox-img" src="" alt="">
+        <p class="lightbox-placeholder" id="lightbox-placeholder"></p>
+        <figcaption id="lightbox-caption"></figcaption>
+      </div>
+    </div>
   </section>
   <section id="about">
     <div class="container about-grid">
