@@ -319,6 +319,12 @@ section {
   align-items: center;
 }
 
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+}
+
 .hero-eyebrow {
   font-family: var(--font-label);
   font-size: 0.8rem;
@@ -796,16 +802,18 @@ section {
 
 /* ===== Service area map ===== */
 .map-wrap {
-  max-width: 600px;
+  max-width: 700px;
   margin: 24px auto 0;
   border: 1px solid var(--color-border-blue);
+  filter: grayscale(0.3) invert(0.9) contrast(0.9);
 }
 
-#service-map {
+.map-wrap iframe {
   width: 100%;
   height: auto;
   aspect-ratio: 6 / 5;
   display: block;
+  border: none;
 }
 
 .map-caption {

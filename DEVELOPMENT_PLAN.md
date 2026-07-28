@@ -30,9 +30,7 @@ octileinstall/
 ├── css/
 │   └── styles.css
 ├── js/
-│   ├── main.js          (nav, scroll, mosaic animation)
-│   ├── calculator.js    (tile calculator)
-│   └── map.js           (canvas service area map)
+│   └── main.js          (nav, scroll-reveal, hero mosaic animation, lightbox, quote form)
 ├── images/
 │   ├── logo.png                     (provided later)
 │   └── gallery/                     (provided later — see Section 5)
@@ -152,9 +150,9 @@ Buttons: primary/accent = solid `--blue` with a cut-corner `clip-path`, hover �
 ✅ *Accept:* With no image files present, gallery shows 7 styled captioned placeholders (no broken-image icons); dropping a correctly named file into `images/gallery/` makes it appear with zero code changes; lightbox opens/closes.
 
 ### Phase 5 — Interactive Features
-**5.1 Tile calculator (`calculator.js`):** inputs: area length (ft), width (ft), tile size (dropdown: 12×12, 12×24, 18×18, 24×24 in, 3×6 subway), waste % (default 10). Output: sq ft needed and tile count. Formula: `area = L×W`, `total = area × (1 + waste/100)`, `tiles = ceil(total / tileArea_sqft)`. Validate inputs > 0; show inline error otherwise.
-**5.2 Service area map (`map.js`):** HTML5 canvas (~600×500 logical px, scaled responsively) drawing a stylized SoCal coastline shape with labeled markers: Los Angeles, Orange County (highlighted, accent color), Inland Empire, San Diego. Caption: "Proudly serving all of Southern California." A simple styled list fallback in `<noscript>`.
-✅ *Accept:* Calculator: 10×8 ft, 12×12 tiles, 10% waste → 88 sq ft, 88 tiles. Map renders crisply on retina (scale by `devicePixelRatio`) and resizes without distortion.
+**5.1 Tile calculator** — **removed 2026-07-27.** The original arithmetic calculator (length × width × waste ÷ tile size) shipped in Phases 1–8 but was pulled at the user's request: they want an **AI-powered tile estimator** instead (e.g. photo upload → room dimension/tile-count estimate), not a plain formula. Deferred to Phase 9 alongside the AI Design Advisor, since both need a backend (Netlify Function or similar) to call an LLM/vision API safely — can't be done as client-only JS like the old version.
+**5.2 Service area map** — **replaced 2026-07-27.** The original canvas-drawn stylized SoCal coastline (`map.js`) was inaccurate. Replaced with a real embedded Google Map (keyless `https://maps.google.com/maps?...&output=embed` iframe, no API key needed) centered on the LA/OC/Inland Empire/San Diego region, with a CSS filter (`invert`/`grayscale`/`contrast`) to keep it visually dark-theme-consistent. `map.js` deleted — the iframe needs no JS.
+✅ *Accept:* Map iframe loads real Google Maps imagery centered on the four service regions; no canvas/JS dependency.
 
 ### Phase 6 — Quote Form
 **6.1** Form in `#quote`: name*, phone*, email, city, project type (dropdown of services, Custom Shower default), message*. HTML5 validation + minimal JS validation.
@@ -171,12 +169,13 @@ Buttons: primary/accent = solid `--blue` with a cut-corner `clip-path`, hover �
 
 ### Phase 8 — Responsive & QA
 **8.1** Test at 375px, 480px, 768px, 1024px, 1440px. Fix any horizontal scroll, overlapping text, or chopped layouts. Breakpoints: 768px (2-col), 480px (1-col, larger tap targets, reduced font sizes).
-**8.2 Full QA checklist:** every link works; every `tel:` link dials; form validates; calculator math correct; gallery fallbacks intact; no console errors; page weight < 500KB without photos.
+**8.2 Full QA checklist:** every link works; every `tel:` link dials; form validates; gallery fallbacks intact; no console errors; page weight < 500KB without photos.
 **8.3 Deploy:** push to GitHub → connect Netlify → verify live URL → connect custom domain + HTTPS when domain confirmed.
 ✅ *Accept:* Site live on Netlify URL, QA checklist 100% pass.
 
 ### Phase 9 — Post-Launch (do NOT block launch on these)
 - **AI Design Advisor:** ⚠️ Must NOT call the Anthropic API directly from the browser (exposes the API key). Build a Netlify Function (`/netlify/functions/advisor.js`) that holds the key in an env var, forwards the user's prompt to the API (claude-sonnet), and returns the reply. Front end: small chat box that fetches the function. Rate-limit + cap tokens.
+- **AI-powered tile estimator:** replaces the plain-arithmetic calculator removed in the 2026-07-27 redesign (see Section 7, Phase 5.1). User wants something smarter than a formula — likely photo upload or richer project description → AI-estimated tile count/cost. Same constraint as the Design Advisor: needs a Netlify Function to hold the API key server-side, can't be client-only JS.
 - Swap in real photos as Instagram posts come in (drop into `images/gallery/` per Section 5 naming).
 - Real testimonials / Google Reviews link; before–after slider; email address; expanded About page or multi-page split if content grows.
 
@@ -190,7 +189,7 @@ Copy this and check off as you go:
 - [x] 2.1 Navbar  - [x] 2.2 Hero  - [x] 2.3 Footer
 - [x] 3.1 Services  - [x] 3.2 About  - [x] 3.3 Testimonials  - [x] 3.4 Contact
 - [x] 4.1 Gallery grid  - [x] 4.2 Lightbox
-- [x] 5.1 Calculator  - [x] 5.2 Service area map
+- [x] 5.1 Calculator (removed 2026-07-27, deferred to Phase 9 as AI estimator)  - [x] 5.2 Service area map (real Google embed, replaced canvas 2026-07-27)
 - [x] 6.1 Quote form  - [x] 6.2 Formspree hookup (awaiting real FORM_ID)
 - [x] 7.1–7.5 SEO, schema, a11y
 - [x] 8.1–8.2 Responsive QA  - [ ] 8.3 Deploy (needs GitHub push + Netlify connect — awaiting go-ahead)
