@@ -17,21 +17,32 @@
   });
 })();
 
-// Hero mosaic background
+// Hero tile mosaic background
 (function () {
   var mosaic = document.getElementById('hero-mosaic');
   if (!mosaic) return;
 
-  var cols = 8;
-  var rows = 6;
-  var colors = ['#0f4c5c', '#c86b3c', '#1a6478', '#0a3945'];
+  var order = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
-  for (var i = 0; i < cols * rows; i++) {
-    var tile = document.createElement('span');
-    tile.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-    tile.style.animationDelay = (Math.random() * 6).toFixed(2) + 's';
+  order.forEach(function (n) {
+    var tile = document.createElement('div');
+    tile.className = 'tile-cell t' + n;
     mosaic.appendChild(tile);
-  }
+  });
+})();
+
+// Scroll-reveal animation
+(function () {
+  var revealEls = document.querySelectorAll('.reveal');
+  if (!revealEls.length || !('IntersectionObserver' in window)) return;
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  revealEls.forEach(function (el) { observer.observe(el); });
 })();
 
 // Footer copyright year

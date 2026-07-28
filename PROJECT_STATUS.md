@@ -32,8 +32,11 @@
 - ✅ Concrete info integrated (phone, hours, logo, about copy)
 - ✅ Phases 1–7 built: skeleton, navbar/hero/footer, content sections, gallery + lightbox, tile calculator, service-area map, quote form, SEO/schema/a11y
 - ✅ Phase 8.1–8.2 responsive QA passed at 375/480/768/1024/1440px, no console errors, page weight ~43KB (HTML+CSS+JS, excluding images)
+- ✅ **Visual redesign (2026-07-27)**: full re-skin to a dark navy/blue theme based on a reference mockup the user provided (`ZaraAI/index.html`) — Bebas Neue/Barlow/Barlow Condensed fonts, animated hero tile mosaic, glass nav, clip-path buttons, grout-line card grids, facts-only stats bar (35+ years, license #, 4 regions, 6 services — no invented numbers). All prior working features carried over unchanged: gallery lightbox + placeholder fallback, tile calculator math, Formspree quote form + honeypot, JSON-LD/SEO, mobile hamburger nav (the reference itself lacked one — kept ours). Re-verified via DOM/computed-style checks at all breakpoints (screenshot tool was down for this session; see note below).
 - ⏳ Phase 8.3 (deploy to GitHub + Netlify) not yet done — requires explicit go-ahead since it pushes to a shared remote
-- ⏳ Phase 9 (AI Design Advisor, real photos, real reviews) intentionally deferred post-launch
+- ⏳ Phase 9 (AI Design Advisor, real photos, real reviews) intentionally deferred post-launch — the reference mockup's AI Advisor JS is non-functional (broken direct-to-Anthropic fetch, no auth, would be CORS-blocked anyway); a real version needs a Netlify Function holding the API key server-side, per this plan's original Phase 9 note
+
+**Known gap:** the Browser-pane screenshot tool timed out for the whole redesign session (confirmed unrelated to this codebase — even a blank external site failed to screenshot). Functionality was verified through DOM inspection, computed styles, and simulated interactions instead. Worth a quick visual pass in a real browser next session to confirm nothing looks off.
 
 ---
 

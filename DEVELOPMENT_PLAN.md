@@ -81,7 +81,30 @@ Logo: reference `images/logo.png` in navbar and footer; same `onerror` fallback 
 
 ## 6. Design System
 
-Define once in `styles.css` as CSS variables; use variables everywhere (no hard-coded colors elsewhere).
+**Updated 2026-07-27** — redesigned to a dark navy/blue system per reference mockup, replacing the original warm off-white palette below (kept here for history).
+
+```css
+:root {
+  --navy: #0a0e1a;             /* page background */
+  --navy-mid: #111827;         /* card/panel surfaces */
+  --navy-light: #1c2535;       /* placeholder/alt surface */
+  --blue: #1a6fd4;             /* primary — buttons, links */
+  --blue-light: #3d9bff;       /* accent — highlights, hover, headings accent */
+  --blue-dark: #0d3d7a;
+  --white: #f0f4ff;            /* body text */
+  --grey: #8a9ab5;             /* muted text */
+  --font-display: 'Bebas Neue', sans-serif;      /* big headings */
+  --font-body: 'Barlow', sans-serif;             /* paragraphs */
+  --font-label: 'Barlow Condensed', sans-serif;  /* nav/buttons/labels, uppercase + letter-spacing */
+  --radius: 2px;               /* mostly sharp corners; clip-path cut-corner on primary buttons */
+  --container: 1200px;
+}
+```
+
+Buttons: primary/accent = solid `--blue` with a cut-corner `clip-path`, hover → `--blue-light` + dark text; secondary = transparent outline. Section padding: large (6-8rem desktop) via `--section-padding` + `--section-padding-x`. Headings use `--font-display` (Bebas Neue renders as caps by design). Nav/labels/buttons use `--font-label` uppercase with letter-spacing. Load all three fonts from Google Fonts with `display=swap`.
+
+<details>
+<summary>Original design system (pre-redesign, warm palette)</summary>
 
 ```css
 :root {
@@ -98,8 +121,7 @@ Define once in `styles.css` as CSS variables; use variables everywhere (no hard-
   --container: 1100px;
 }
 ```
-
-Buttons: primary = solid `--color-primary`, white text; hover darkens 10%. Section padding: 80px desktop / 48px mobile. Headings use `--font-display`. Load both fonts from Google Fonts with `display=swap`.
+</details>
 
 ---
 

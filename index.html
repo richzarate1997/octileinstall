@@ -19,10 +19,11 @@
 <meta name="twitter:image" content="images/logo.jpg">
 
 <link rel="icon" href="favicon.ico">
+<meta name="theme-color" content="#0a0e1a">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/styles.css">
 
@@ -54,7 +55,7 @@
   <div class="container navbar">
     <a href="#hero" class="navbar-brand">
       <img src="images/logo.jpg" alt="OC Tile Install Inc logo" class="navbar-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-      <span class="navbar-brand-text" style="display:none;">OC Tile Install <small>Inc</small></span>
+      <span class="navbar-brand-text" style="display:none;">OC <span>TILE</span> <small>Install Inc</small></span>
     </a>
 
     <nav class="navbar-nav" id="primary-nav">
@@ -76,22 +77,52 @@
 
 <main>
   <section id="hero">
-    <div class="hero-mosaic" id="hero-mosaic" aria-hidden="true"></div>
-    <div class="container hero-content">
-      <h1>Custom Showers &amp; Tile Work, Built Right</h1>
-      <p class="hero-subline">35+ years of craftsmanship &middot; CA Contractor License #1040037</p>
-      <div class="hero-ctas">
-        <a href="#quote" class="btn btn-accent">Get a Free Quote</a>
-        <a href="tel:+17146243132" class="btn btn-primary">(714) 624-3132</a>
+    <div class="container hero-inner">
+      <div class="hero-left">
+        <p class="hero-eyebrow">Orange County Custom Shower &amp; Tile Specialists</p>
+        <h1 class="hero-title">Custom Showers &amp; Tile Work<br><span class="accent">Built Right</span></h1>
+        <p class="hero-sub">35+ years of craftsmanship specializing in custom-designed showers &mdash; licensed California contractor #1040037.</p>
+        <div class="hero-badges">
+          <span class="badge"><span class="dot"></span>Licensed Contractor</span>
+          <span class="badge"><span class="dot"></span>License #1040037</span>
+          <span class="badge"><span class="dot"></span>Orange County, CA</span>
+        </div>
+        <div class="hero-btns">
+          <a href="#quote" class="btn-primary">Get a Free Quote</a>
+          <a href="tel:+17146243132" class="btn-secondary">(714) 624-3132</a>
+        </div>
+      </div>
+      <div class="hero-right" aria-hidden="true">
+        <div class="tile-mosaic" id="hero-mosaic"></div>
       </div>
     </div>
   </section>
+  <div class="stats reveal">
+    <div class="container stats-grid">
+      <div class="stat-item">
+        <div class="stat-num">35+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">#1040037</div>
+        <div class="stat-label">CA Contractor License</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Regions Served</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Specialty Services</div>
+      </div>
+    </div>
+  </div>
   <section id="services">
     <div class="container">
       <h2>Services</h2>
       <p class="section-intro">From full custom shower builds to everyday tile repairs, we bring 35+ years of craftsmanship to every job.</p>
       <!-- TODO: confirm final service list -->
-      <div class="services-grid">
+      <div class="services-grid reveal">
         <article class="service-card service-card--specialty">
           <span class="service-badge">Specialty</span>
           <span class="service-icon" aria-hidden="true">
@@ -148,7 +179,7 @@
       <h2>Gallery</h2>
       <p class="section-intro">A look at recent custom shower and tile installations across Southern California.</p>
 
-      <div class="gallery-grid">
+      <div class="gallery-grid reveal">
         <figure class="gallery-item gallery-item--tall" data-caption="Arched hallway mosaic">
           <img src="images/gallery/01-arched-hallway-mosaic.jpg" alt="Arched hallway mosaic" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.classList.add('is-visible');">
           <div class="gallery-placeholder"></div>
@@ -197,7 +228,7 @@
     </div>
   </section>
   <section id="about">
-    <div class="container about-grid">
+    <div class="container about-grid reveal">
       <div class="about-photo placeholder" aria-hidden="true">
         <span>Photo coming soon</span>
         <!-- TODO: replace with owner photo -->
@@ -215,7 +246,7 @@
   <section id="service-area">
     <div class="container">
       <h2>Service Area</h2>
-      <div class="map-wrap">
+      <div class="map-wrap reveal">
         <canvas id="service-map" width="600" height="500" role="img" aria-label="Map of Southern California service area including Los Angeles, Orange County, Inland Empire, and San Diego"></canvas>
         <noscript>
           <ul class="contact-list">
@@ -239,56 +270,61 @@
       <h2>Tile Calculator</h2>
       <p class="section-intro">Estimate how much tile you&rsquo;ll need for your project.</p>
 
-      <form class="calculator-form" id="calculator-form" novalidate>
-        <div class="form-row">
-          <label for="calc-length">Area length (ft)</label>
-          <input type="number" id="calc-length" name="length" min="0.1" step="any" required>
-        </div>
-        <div class="form-row">
-          <label for="calc-width">Area width (ft)</label>
-          <input type="number" id="calc-width" name="width" min="0.1" step="any" required>
-        </div>
-        <div class="form-row">
-          <label for="calc-tile-size">Tile size</label>
-          <select id="calc-tile-size" name="tileSize">
-            <option value="1">12&times;12 in</option>
-            <option value="2">12&times;24 in</option>
-            <option value="2.25">18&times;18 in</option>
-            <option value="4">24&times;24 in</option>
-            <option value="0.125">3&times;6 in (subway)</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label for="calc-waste">Waste (%)</label>
-          <input type="number" id="calc-waste" name="waste" min="0" step="any" value="10">
-        </div>
-        <button type="submit" class="btn btn-primary">Calculate</button>
-      </form>
+      <div class="panel reveal">
+        <form class="calculator-form" id="calculator-form" novalidate>
+          <div class="form-row">
+            <label for="calc-length">Area length (ft)</label>
+            <input type="number" id="calc-length" name="length" min="0.1" step="any" required>
+          </div>
+          <div class="form-row">
+            <label for="calc-width">Area width (ft)</label>
+            <input type="number" id="calc-width" name="width" min="0.1" step="any" required>
+          </div>
+          <div class="form-row">
+            <label for="calc-tile-size">Tile size</label>
+            <select id="calc-tile-size" name="tileSize">
+              <option value="1">12&times;12 in</option>
+              <option value="2">12&times;24 in</option>
+              <option value="2.25">18&times;18 in</option>
+              <option value="4">24&times;24 in</option>
+              <option value="0.125">3&times;6 in (subway)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="calc-waste">Waste (%)</label>
+            <input type="number" id="calc-waste" name="waste" min="0" step="any" value="10">
+          </div>
+          <button type="submit" class="form-submit">Calculate</button>
+        </form>
 
-      <p class="calculator-error" id="calculator-error" role="alert"></p>
+        <p class="calculator-error" id="calculator-error" role="alert"></p>
 
-      <div class="calculator-result" id="calculator-result" hidden>
-        <p><strong id="calc-result-sqft"></strong> sq ft needed</p>
-        <p><strong id="calc-result-tiles"></strong> tiles needed</p>
+        <div class="calculator-result" id="calculator-result" hidden>
+          <p><strong id="calc-result-sqft"></strong> sq ft needed</p>
+          <p><strong id="calc-result-tiles"></strong> tiles needed</p>
+        </div>
       </div>
     </div>
   </section>
   <section id="testimonials">
     <div class="container">
       <h2>What Clients Say</h2>
-      <div class="testimonials-grid">
+      <div class="testimonials-grid reveal">
         <blockquote class="testimonial-card">
           <!-- TODO: replace with real review -->
+          <p class="stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
           <p>&ldquo;Alberto turned our outdated bathroom into a stunning custom shower. The attention to detail was incredible.&rdquo;</p>
           <footer>&mdash; Jennifer M., Irvine</footer>
         </blockquote>
         <blockquote class="testimonial-card">
           <!-- TODO: replace with real review -->
+          <p class="stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
           <p>&ldquo;Best tile work we&rsquo;ve ever had done. Professional, on time, and the shower looks like it belongs in a magazine.&rdquo;</p>
           <footer>&mdash; David R., Anaheim</footer>
         </blockquote>
         <blockquote class="testimonial-card">
           <!-- TODO: replace with real review -->
+          <p class="stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
           <p>&ldquo;35 years of experience really shows. Our custom shower design exceeded every expectation.&rdquo;</p>
           <footer>&mdash; Maria S., Santa Ana</footer>
         </blockquote>
@@ -300,53 +336,55 @@
       <h2>Get a Free Quote</h2>
       <p class="section-intro">Tell us about your project and we&rsquo;ll get back to you. Or call/text <a href="tel:+17146243132">(714) 624-3132</a>.</p>
 
-      <!-- TODO: replace FORM_ID with real Formspree endpoint -->
-      <form class="quote-form" id="quote-form" action="https://formspree.io/f/FORM_ID" method="POST" novalidate>
-        <div class="form-row">
-          <label for="quote-name">Name *</label>
-          <input type="text" id="quote-name" name="name" required>
-        </div>
-        <div class="form-row">
-          <label for="quote-phone">Phone *</label>
-          <input type="tel" id="quote-phone" name="phone" required>
-        </div>
-        <div class="form-row">
-          <label for="quote-email">Email</label>
-          <input type="email" id="quote-email" name="email">
-        </div>
-        <div class="form-row">
-          <label for="quote-city">City</label>
-          <input type="text" id="quote-city" name="city">
-        </div>
-        <div class="form-row form-row--full">
-          <label for="quote-project-type">Project Type</label>
-          <select id="quote-project-type" name="projectType">
-            <option value="Custom Shower" selected>Custom Shower</option>
-            <option value="Bathroom Floors & Walls">Bathroom Floors &amp; Walls</option>
-            <option value="Kitchen Backsplashes">Kitchen Backsplashes</option>
-            <option value="Flooring">Flooring &mdash; Tile, Marble &amp; Mosaic</option>
-            <option value="Tub Surrounds">Tub Surrounds</option>
-            <option value="Repairs">Repairs</option>
-          </select>
-        </div>
-        <div class="form-row form-row--full">
-          <label for="quote-message">Message *</label>
-          <textarea id="quote-message" name="message" rows="5" required></textarea>
-        </div>
+      <div class="panel reveal">
+        <!-- TODO: replace FORM_ID with real Formspree endpoint -->
+        <form class="quote-form" id="quote-form" action="https://formspree.io/f/FORM_ID" method="POST" novalidate>
+          <div class="form-row">
+            <label for="quote-name">Name *</label>
+            <input type="text" id="quote-name" name="name" required>
+          </div>
+          <div class="form-row">
+            <label for="quote-phone">Phone *</label>
+            <input type="tel" id="quote-phone" name="phone" required>
+          </div>
+          <div class="form-row">
+            <label for="quote-email">Email</label>
+            <input type="email" id="quote-email" name="email">
+          </div>
+          <div class="form-row">
+            <label for="quote-city">City</label>
+            <input type="text" id="quote-city" name="city">
+          </div>
+          <div class="form-row form-row--full">
+            <label for="quote-project-type">Project Type</label>
+            <select id="quote-project-type" name="projectType">
+              <option value="Custom Shower" selected>Custom Shower</option>
+              <option value="Bathroom Floors & Walls">Bathroom Floors &amp; Walls</option>
+              <option value="Kitchen Backsplashes">Kitchen Backsplashes</option>
+              <option value="Flooring">Flooring &mdash; Tile, Marble &amp; Mosaic</option>
+              <option value="Tub Surrounds">Tub Surrounds</option>
+              <option value="Repairs">Repairs</option>
+            </select>
+          </div>
+          <div class="form-row form-row--full">
+            <label for="quote-message">Message *</label>
+            <textarea id="quote-message" name="message" rows="5" required></textarea>
+          </div>
 
-        <div class="form-row form-row--honeypot" aria-hidden="true">
-          <label for="quote-company">Company</label>
-          <input type="text" id="quote-company" name="company" tabindex="-1" autocomplete="off">
-        </div>
+          <div class="form-row form-row--honeypot" aria-hidden="true">
+            <label for="quote-company">Company</label>
+            <input type="text" id="quote-company" name="company" tabindex="-1" autocomplete="off">
+          </div>
 
-        <button type="submit" class="btn btn-accent form-row--full">Send Quote Request</button>
-      </form>
+          <button type="submit" class="form-submit form-row--full">Send Quote Request</button>
+        </form>
 
-      <p class="quote-form-message" id="quote-form-message" role="alert"></p>
+        <p class="quote-form-message" id="quote-form-message" role="alert"></p>
+      </div>
     </div>
   </section>
   <section id="contact">
-    <div class="container contact-grid">
+    <div class="container contact-grid reveal">
       <div>
         <h2>Contact Us</h2>
         <ul class="contact-list">
@@ -370,18 +408,32 @@
 </main>
 
 <footer id="footer">
-  <div class="container footer-content">
-    <div class="footer-brand">
-      <img src="images/logo.jpg" alt="OC Tile Install Inc logo" class="footer-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-      <span class="footer-brand-text" style="display:none;">OC Tile Install Inc</span>
-      <p>CA Contractor License #1040037</p>
-    </div>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <img src="images/logo.jpg" alt="OC Tile Install Inc logo" class="footer-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <span class="footer-brand-text" style="display:none;">OC <span>TILE</span> INSTALL INC</span>
+        <p>Custom shower &amp; tile installation serving Southern California.</p>
+        <span class="license-badge">License #1040037</span>
+      </div>
 
-    <div class="footer-info">
-      <p><a href="tel:+17146243132">(714) 624-3132</a></p>
-      <p>7:00 AM &ndash; 6:00 PM <!-- TODO: confirm days of week --></p>
-      <p>Serving Orange County, Los Angeles, Inland Empire &amp; San Diego</p>
-      <p><a href="https://instagram.com/octileinstall" target="_blank" rel="noopener">@octileinstall</a></p>
+      <div class="footer-links">
+        <p class="footer-heading">Services</p>
+        <ul>
+          <li><a href="#services">Custom Showers</a></li>
+          <li><a href="#services">Bathroom Floors &amp; Walls</a></li>
+          <li><a href="#services">Kitchen Backsplashes</a></li>
+          <li><a href="#services">Flooring</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-info">
+        <p class="footer-heading">Contact</p>
+        <p><a href="tel:+17146243132">(714) 624-3132</a></p>
+        <p>7:00 AM &ndash; 6:00 PM <!-- TODO: confirm days of week --></p>
+        <p>Serving Orange County, Los Angeles, Inland Empire &amp; San Diego</p>
+        <p><a href="https://instagram.com/octileinstall" target="_blank" rel="noopener">@octileinstall</a></p>
+      </div>
     </div>
 
     <p class="footer-copyright">&copy; <span id="current-year"></span> OC Tile Install Inc. All rights reserved.</p>

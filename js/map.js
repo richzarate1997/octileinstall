@@ -21,8 +21,24 @@
     ctx.scale(dpr, dpr);
 
     // Ocean background
-    ctx.fillStyle = '#dcebef';
+    ctx.fillStyle = '#0d1420';
     ctx.fillRect(0, 0, logicalWidth, logicalHeight);
+
+    // Grid-line texture over the ocean
+    ctx.strokeStyle = 'rgba(26, 111, 212, 0.08)';
+    ctx.lineWidth = 1;
+    for (var gx = 0; gx <= logicalWidth; gx += 30) {
+      ctx.beginPath();
+      ctx.moveTo(gx, 0);
+      ctx.lineTo(gx, logicalHeight);
+      ctx.stroke();
+    }
+    for (var gy = 0; gy <= logicalHeight; gy += 30) {
+      ctx.beginPath();
+      ctx.moveTo(0, gy);
+      ctx.lineTo(logicalWidth, gy);
+      ctx.stroke();
+    }
 
     // Stylized coastline / landmass
     ctx.beginPath();
@@ -37,9 +53,9 @@
     ctx.lineTo(260, 500);
     ctx.lineTo(0, 500);
     ctx.closePath();
-    ctx.fillStyle = '#f3ede1';
+    ctx.fillStyle = '#1c2535';
     ctx.fill();
-    ctx.strokeStyle = '#c9bfa8';
+    ctx.strokeStyle = 'rgba(26, 111, 212, 0.4)';
     ctx.lineWidth = 2;
     ctx.stroke();
 
@@ -48,14 +64,14 @@
       var radius = region.highlight ? 10 : 7;
       ctx.beginPath();
       ctx.arc(region.x, region.y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = region.highlight ? '#c86b3c' : '#0f4c5c';
+      ctx.fillStyle = region.highlight ? '#3d9bff' : '#1a6fd4';
       ctx.fill();
-      ctx.strokeStyle = '#ffffff';
+      ctx.strokeStyle = '#f0f4ff';
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      ctx.font = region.highlight ? 'bold 16px Inter, sans-serif' : '14px Inter, sans-serif';
-      ctx.fillStyle = '#1f2933';
+      ctx.font = region.highlight ? 'bold 16px Barlow Condensed, sans-serif' : '14px Barlow Condensed, sans-serif';
+      ctx.fillStyle = '#f0f4ff';
       ctx.textAlign = region.x > logicalWidth - 140 ? 'right' : 'left';
       var labelX = region.x + (region.x > logicalWidth - 140 ? -radius - 8 : radius + 8);
       ctx.fillText(region.name, labelX, region.y + 5);
