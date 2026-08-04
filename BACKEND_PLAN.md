@@ -563,17 +563,38 @@ Response (200 OK): { updated inspection }
 ## 7. Task Checklist
 
 Backend — **Haiku 4.5** (`/model claude-haiku-4-5-20251001`):
-- [ ] 1.1 Maven project setup
-- [ ] 1.2 MySQL connection configured
-- [ ] 2.1 Entity classes (User, Inquiry, Inspection)
-- [ ] 2.2 JPA repositories
+- [x] 1.1 Maven project setup
+- [x] 1.2 MySQL connection configured
+- [x] 2.1 Entity classes (User, Inquiry, Inspection)
+- [x] 2.2 JPA repositories
 
 🛑 **SWITCH → Opus 5** (`/model claude-opus-5`)
 
 Backend — **Opus 5**:
-- [ ] 3.1 JWT token provider
-- [ ] 3.2 Auth filter & security config
-- [ ] 3.3 Auth controller & service
+- [x] 3.1 JWT token provider
+- [x] 3.2 Auth filter & security config
+- [x] 3.3 Auth controller & service
+
+Phase 3 landed with 22 passing tests (`mvn test`). Three defects carried in from
+Phases 1–2 were fixed as part of it, all of which would have surfaced as "auth is
+broken" rather than pointing at their real cause:
+
+1. **`server.servlet.context-path=/api`** — Spring Security matchers run against the
+   path *within* the servlet context, so `requestMatchers("/api/auth/login")` would
+   never have matched. The prefix now lives in `@RequestMapping` and the matchers are
+   literal URLs.
+2. **The seeded BCrypt hash in `schema.sql` was not a real digest** of any password, so
+   nobody could ever have logged in. Account creation moved to `DataSeeder`, which hashes
+   with the same `PasswordEncoder` bean that login verifies against.
+3. **`schema.sql` declared MySQL `ENUM`s of display strings** ("Custom Shower") while
+   `@Enumerated(EnumType.STRING)` writes constant names (`CUSTOM_SHOWER`) — every insert
+   would have been rejected. Columns are now `VARCHAR`, and the file moved to
+   `backend/db/` because Spring Boot auto-executes a *classpath* `schema.sql` against
+   embedded datasources, which broke the H2 test context.
+
+The auth tests were mutation-checked: flipping `.anyRequest().authenticated()` to
+`permitAll()` fails 5 tests, and removing the JWT filter from the chain fails 1. They
+are not vacuous.
 
 🛑 **SWITCH → Sonnet 5** (`/model claude-sonnet-5`) — stay here for everything below
 
@@ -636,9 +657,13 @@ Rough timeline: 2-3 weeks part-time, 1 week full-time
 - Frontend is mostly copy-paste tables/forms; Tailwind docs are your friend
 - Test as you go (don't wait until the end)
 
-**Two things this plan leaves open** — decide them before or during Phase 3:
-- **How does Alberto's account get created?** There's a login endpoint but no registration (deliberate — no public signup on an admin tool). The first user needs a manual insert with a BCrypt-hashed password, either via a seed script or a one-off SQL statement.
-- **`scheduled_date DATETIME` + `scheduled_time TIME` in the schema is redundant** — one `DATETIME` covers both. Left as-is to match the DTOs, but it's the kind of split that causes bugs when the two disagree. Cheap to collapse now, annoying later.
+**Two things this plan left open:**
+- ~~**How does Alberto's account get created?**~~ **RESOLVED in Phase 3.** `DataSeeder`
+  creates it on startup, hashing with the same `PasswordEncoder` bean login verifies
+  against. It only ever *creates* — a restart can never reset a password that was
+  changed. Set `ADMIN_SEED_PASSWORD` to choose the password; otherwise a random one is
+  generated and logged once at WARN level.
+- **`scheduled_date DATETIME` + `scheduled_time TIME` in the schema is redundant** — one `DATETIME` covers both. Left as-is to match the DTOs, but it's the kind of split that causes bugs when the two disagree. **Still open — decide this at the start of Phase 5**, before `InspectionService` is written against both fields; collapsing it afterwards means touching the DTO, the entity, and the dashboard form.
 
 **Resources:**
 - Spring Boot docs: https://spring.io/projects/spring-boot
