@@ -53,8 +53,10 @@ CREATE TABLE IF NOT EXISTS inquiries (
 CREATE TABLE IF NOT EXISTS inspections (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   inquiry_id BIGINT,
+  -- Single DATETIME covers both date and time. An earlier draft split this into
+  -- scheduled_date (DATE) + scheduled_time (TIME); collapsed per BACKEND_PLAN.md §9
+  -- before Phase 5 built a service and dashboard form on top of the redundant split.
   scheduled_date DATETIME(6) NOT NULL,
-  scheduled_time TIME,
   location VARCHAR(500),
   -- SCHEDULED | IN_PROGRESS | COMPLETED | CANCELLED
   status VARCHAR(50) NOT NULL DEFAULT 'SCHEDULED',

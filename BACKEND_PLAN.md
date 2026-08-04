@@ -86,7 +86,7 @@ octileinstall/
 │   │   ├── services/
 │   │   │   └── api.js               (Axios calls to backend)
 │   │   └── index.jsx
-│   └── .env                         (API_URL=http://localhost:8080/api)
+│   └── .env                         (API_URL=http://localhost:8081/api)
 └── [existing frontend site remains unchanged]
 ```
 
@@ -131,11 +131,13 @@ CREATE TABLE inquiries (
 );
 
 -- Inspections table (Scheduled site visits)
+-- NOTE: originally had scheduled_date DATETIME + scheduled_time TIME (the redundant split
+-- flagged in §9). Collapsed to a single DATETIME during Phase 3 — see backend/db/schema.sql
+-- for the version actually implemented.
 CREATE TABLE inspections (
   id INT PRIMARY KEY AUTO_INCREMENT,
   inquiry_id INT,
   scheduled_date DATETIME NOT NULL,
-  scheduled_time TIME,
   location VARCHAR(500),
   status ENUM('SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED') DEFAULT 'SCHEDULED',
   notes TEXT,
@@ -170,7 +172,7 @@ CREATE INDEX idx_inspection_scheduled ON inspections(scheduled_date);
 **Acceptance:**
 - Project builds without errors (`mvn clean package`)
 - Database tables created and accessible via MySQL client
-- Spring Boot app starts on `localhost:8080`
+- Spring Boot app starts on `localhost:8081` (port 8080 is taken by another local project's static-site server, see `.claude/launch.json`)
 
 ---
 
@@ -181,7 +183,7 @@ CREATE INDEX idx_inspection_scheduled ON inspections(scheduled_date);
 **Tasks:**
 - [ ] Create `User` entity (id, email, passwordHash, fullName, role, timestamps)
 - [ ] Create `Inquiry` entity (customer info, project type, status, notes, timestamps, FK to User)
-- [ ] Create `Inspection` entity (inquiryId, scheduledDate, scheduledTime, location, status, notes, timestamps)
+- [ ] Create `Inspection` entity (inquiryId, scheduledDate, location, status, notes, timestamps)
 - [ ] Create JPA repositories for all three entities
 - [ ] Add Lombok annotations (`@Entity`, `@Data`, `@NoArgsConstructor`, `@AllArgsConstructor`)
 - [ ] Add validation annotations (`@NotBlank`, `@Email`, `@NotNull`, etc.)
@@ -293,7 +295,7 @@ Auth is done — the expensive part is behind you. Phases 4 through 6 are repeti
   - Validate inquiry exists before creating inspection
   - Validate scheduled_date is in future
 - [ ] Create `InspectionDTO`
-  - Request: `{ inquiryId, scheduledDate, scheduledTime, location }`
+  - Request: `{ inquiryId, scheduledDate, location }` (scheduledDate is a single ISO-8601 datetime, e.g. `"2026-08-10T14:00:00"`)
   - Response: `{ id, inquiryId, scheduledDate, ..., status, createdAt }`
 
 **Acceptance:**
@@ -336,7 +338,7 @@ Auth is done — the expensive part is behind you. Phases 4 through 6 are repeti
 **Tasks:**
 - [ ] Create React app with Vite (faster than CRA)
 - [ ] Install dependencies: axios, react-router-dom, date-fns, tailwindcss
-- [ ] Create `.env` file with `VITE_API_URL=http://localhost:8080/api`
+- [ ] Create `.env` file with `VITE_API_URL=http://localhost:8081/api`
 - [ ] Create `LoginPage` component
   - Form: email, password
   - Button: Submit
@@ -505,8 +507,7 @@ Response (200 OK): { data: [...], total: 12 }
 Request:
 {
   "inquiryId": 1,
-  "scheduledDate": "2026-08-10",
-  "scheduledTime": "14:00",
+  "scheduledDate": "2026-08-10T14:00:00",
   "location": "123 Main St, Irvine, CA 92614"
 }
 
@@ -537,7 +538,7 @@ Response (200 OK): { updated inspection }
 
 1. **Set up backend locally**
    - Clone/pull repo, `cd backend`
-   - `mvn spring-boot:run` (starts on 8080)
+   - `mvn spring-boot:run` (starts on 8081)
    - MySQL running locally on port 3306
 
 2. **Set up frontend locally**
@@ -663,7 +664,7 @@ Rough timeline: 2-3 weeks part-time, 1 week full-time
   against. It only ever *creates* — a restart can never reset a password that was
   changed. Set `ADMIN_SEED_PASSWORD` to choose the password; otherwise a random one is
   generated and logged once at WARN level.
-- **`scheduled_date DATETIME` + `scheduled_time TIME` in the schema is redundant** — one `DATETIME` covers both. Left as-is to match the DTOs, but it's the kind of split that causes bugs when the two disagree. **Still open — decide this at the start of Phase 5**, before `InspectionService` is written against both fields; collapsing it afterwards means touching the DTO, the entity, and the dashboard form.
+- ~~**`scheduled_date DATETIME` + `scheduled_time TIME` in the schema is redundant**~~ **RESOLVED.** Collapsed to a single `scheduledDate DATETIME` on the `Inspection` entity before Phase 5 started, so `InspectionService` and its DTO are written against one field from the outset. `InspectionDTO`'s request/response should carry one ISO-8601 datetime string (e.g. `"2026-08-10T14:00:00"`), not a separate date and time.
 
 **Resources:**
 - Spring Boot docs: https://spring.io/projects/spring-boot

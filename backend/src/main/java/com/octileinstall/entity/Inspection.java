@@ -9,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "inspections", indexes = {
@@ -29,11 +28,12 @@ public class Inspection {
     @NotNull(message = "Inquiry is required")
     private Inquiry inquiry;
 
+    // Single DATETIME for both date and time - see BACKEND_PLAN.md §9. An earlier draft
+    // split this into scheduledDate (DATE) + scheduledTime (TIME), which is redundant
+    // and invites the two disagreeing. One field, one source of truth.
     @Column(nullable = false)
-    @NotNull(message = "Scheduled date is required")
+    @NotNull(message = "Scheduled date/time is required")
     private LocalDateTime scheduledDate;
-
-    private LocalTime scheduledTime;
 
     @Column(length = 500)
     private String location;
