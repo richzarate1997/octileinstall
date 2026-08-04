@@ -1,5 +1,7 @@
 package com.octileinstall.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -78,8 +80,24 @@ public class Inquiry {
             this.displayName = displayName;
         }
 
+        // Wire format (JSON in/out) is this human-facing label, matching BACKEND_PLAN.md's
+        // documented API contract and the public site's contact form (index.html's project
+        // type <select>). Storage is unaffected: @Enumerated(EnumType.STRING) on the
+        // entity field persists the constant name (CUSTOM_SHOWER) regardless of this
+        // JSON mapping - JPA and Jackson (de)serialize independently here.
+        @JsonValue
         public String getDisplayName() {
             return displayName;
+        }
+
+        @JsonCreator
+        public static ProjectType fromValue(String value) {
+            for (ProjectType type : values()) {
+                if (type.displayName.equalsIgnoreCase(value) || type.name().equalsIgnoreCase(value)) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException("Unknown project type: " + value);
         }
     }
 

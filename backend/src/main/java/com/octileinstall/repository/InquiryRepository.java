@@ -9,6 +9,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
     Page<Inquiry> findByStatus(Inquiry.Status status, Pageable pageable);
-
-    Page<Inquiry> findByOrderByCreatedAtDesc(Pageable pageable);
 }
