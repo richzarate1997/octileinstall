@@ -6,6 +6,29 @@
 
 ---
 
+## 0. Model Strategy — READ FIRST
+
+This plan is built to be worked through by **more than one model**. Each phase is tagged with the model to run it on, and there are 🛑 **SWITCH** banners between phases where the model needs to change. Switch with `/model <id>` in Claude Code.
+
+**Start on Haiku 4.5.** Full sequence:
+
+| Phases | Model | `/model` command | Why |
+|---|---|---|---|
+| Backend 1–2 | Haiku 4.5 | `/model claude-haiku-4-5-20251001` | Maven config + JPA entities are mechanical boilerplate |
+| **Backend 3** | **Opus 5** | `/model claude-opus-5` | **Auth code — do not economize here** |
+| Backend 4–6 | Sonnet 5 | `/model claude-sonnet-5` | Repetitive CRUD; phase 4 is the template for phase 5 |
+| Frontend 1–4 | Sonnet 5 | *(stay on Sonnet 5)* | Forms, tables, Tailwind — well-trodden ground |
+
+**Why Phase 3 gets Opus.** JWT auth is the one place in this plan where a weak model's mistakes are both most damaging and least visible: a broken filter chain or a botched BCrypt comparison still compiles and still passes a happy-path test. Everything else here fails loudly when it's wrong. Spend the Opus tokens on that one phase, then drop back down.
+
+**Why Haiku stops after Phase 2.** Haiku 4.5 has a **200K context window**; Sonnet 5 and Opus 5 have 1M. Once a dozen backend files are in play, Haiku starts losing track of the codebase — that's the practical reason to move off it, more than raw capability.
+
+**Cost note (as of 2026-08-04):** Sonnet 5 is at introductory pricing — **$2/$10 per million tokens through 2026-08-31**, vs. its normal $3/$15. Haiku 4.5 is $1/$5; Opus 5 is $5/$25. Doing the bulk of this in August is meaningfully cheaper.
+
+**At every 🛑 SWITCH banner:** stop, run the `/model` command shown, then continue. If you're an AI model reading this plan and you hit a banner naming a model that isn't the one you're running as, **stop and tell the user to switch** rather than continuing into the next phase.
+
+---
+
 ## 1. Project Structure
 
 ```
@@ -131,7 +154,11 @@ CREATE INDEX idx_inspection_scheduled ON inspections(scheduled_date);
 
 ## 3. Backend Development Phases
 
+> 🟢 **START HERE — Haiku 4.5.** Run `/model claude-haiku-4-5-20251001` before beginning Phase 1.
+
 ### Phase 1: Project Setup & Database
+
+> **Model: Haiku 4.5**
 
 **Tasks:**
 - [ ] Initialize Maven project with Spring Boot 3.x starter
@@ -149,6 +176,8 @@ CREATE INDEX idx_inspection_scheduled ON inspections(scheduled_date);
 
 ### Phase 2: Data Entities & Repositories
 
+> **Model: Haiku 4.5** (no switch needed — same as Phase 1)
+
 **Tasks:**
 - [ ] Create `User` entity (id, email, passwordHash, fullName, role, timestamps)
 - [ ] Create `Inquiry` entity (customer info, project type, status, notes, timestamps, FK to User)
@@ -164,7 +193,23 @@ CREATE INDEX idx_inspection_scheduled ON inspections(scheduled_date);
 
 ---
 
+## 🛑 SWITCH: Haiku 4.5 → Opus 5
+
+**Stop here. Before starting Phase 3, run:**
+
+```
+/model claude-opus-5
+```
+
+Phase 3 is the auth layer. It's the one phase in this plan where a mistake compiles cleanly, passes a happy-path test, and ships a security hole anyway — a filter that never runs, a `SecurityContext` that isn't populated, a BCrypt check comparing the wrong two values. Every other phase fails loudly when it's wrong; this one doesn't.
+
+Run it on Opus 5, then switch back down at the next banner.
+
+---
+
 ### Phase 3: Authentication (JWT)
+
+> 🔴 **Model: Opus 5** — if you are not running as Opus 5, stop and tell the user to switch before writing any code in this phase.
 
 **Tasks:**
 - [ ] Create `JwtTokenProvider` service
@@ -192,7 +237,21 @@ CREATE INDEX idx_inspection_scheduled ON inspections(scheduled_date);
 
 ---
 
+## 🛑 SWITCH: Opus 5 → Sonnet 5
+
+**Stop here. Before starting Phase 4, run:**
+
+```
+/model claude-sonnet-5
+```
+
+Auth is done — the expensive part is behind you. Phases 4 through 6 are repetitive CRUD and tests, which Sonnet 5 handles at near-Opus quality for a fraction of the cost (and it's at introductory pricing through 2026-08-31). **Stay on Sonnet 5 for the rest of this plan, backend and frontend.** There are no further switches.
+
+---
+
 ### Phase 4: Inquiry Endpoints (CRUD)
+
+> **Model: Sonnet 5**
 
 **Tasks:**
 - [ ] Create `InquiryController`
@@ -221,6 +280,8 @@ CREATE INDEX idx_inspection_scheduled ON inspections(scheduled_date);
 
 ### Phase 5: Inspection Endpoints (CRUD)
 
+> **Model: Sonnet 5** (no switch — use Phase 4 as the template)
+
 **Tasks:**
 - [ ] Create `InspectionController`
   - GET `/api/inspection` — list all inspections (sorted by scheduled_date ASC)
@@ -245,6 +306,8 @@ CREATE INDEX idx_inspection_scheduled ON inspections(scheduled_date);
 
 ### Phase 6: Error Handling & Testing
 
+> **Model: Sonnet 5** (no switch)
+
 **Tasks:**
 - [ ] Create global `@ControllerAdvice` exception handler
   - `NotFoundException` → 404
@@ -265,6 +328,8 @@ CREATE INDEX idx_inspection_scheduled ON inspections(scheduled_date);
 ---
 
 ## 4. Frontend (React Dashboard) Phases
+
+> ✅ **No switch needed — stay on Sonnet 5** for all four frontend phases.
 
 ### Phase 1: Setup & Login
 
@@ -497,14 +562,22 @@ Response (200 OK): { updated inspection }
 
 ## 7. Task Checklist
 
-Backend:
+Backend — **Haiku 4.5** (`/model claude-haiku-4-5-20251001`):
 - [ ] 1.1 Maven project setup
 - [ ] 1.2 MySQL connection configured
 - [ ] 2.1 Entity classes (User, Inquiry, Inspection)
 - [ ] 2.2 JPA repositories
+
+🛑 **SWITCH → Opus 5** (`/model claude-opus-5`)
+
+Backend — **Opus 5**:
 - [ ] 3.1 JWT token provider
 - [ ] 3.2 Auth filter & security config
 - [ ] 3.3 Auth controller & service
+
+🛑 **SWITCH → Sonnet 5** (`/model claude-sonnet-5`) — stay here for everything below
+
+Backend — **Sonnet 5**:
 - [ ] 4.1 Inquiry controller & service
 - [ ] 4.2 Inquiry DTOs
 - [ ] 5.1 Inspection controller & service
@@ -513,7 +586,7 @@ Backend:
 - [ ] 6.2 Integration tests
 - [ ] 6.3 Postman collection
 
-Frontend:
+Frontend — **Sonnet 5** (no switch):
 - [ ] 1.1 React + Vite setup
 - [ ] 1.2 Login page
 - [ ] 1.3 Auth context & private routes
@@ -530,27 +603,31 @@ Frontend:
 
 ## 8. Estimated Timeline
 
-| Phase | Task | Hours | Difficulty |
-|-------|------|-------|------------|
-| 1 | Backend setup | 2 | Easy |
-| 2 | Entities & repos | 3 | Easy |
-| 3 | JWT auth | 4 | Medium |
-| 4 | Inquiry CRUD | 5 | Medium |
-| 5 | Inspection CRUD | 5 | Medium |
-| 6 | Testing & errors | 4 | Medium |
-| - | Backend subtotal | **23 hours** | - |
-| 1 | Frontend setup & login | 3 | Easy |
-| 2 | Inquiry management | 6 | Medium |
-| 3 | Inspection management | 6 | Medium |
-| 4 | Polish & responsive | 4 | Medium |
-| - | Frontend subtotal | **19 hours** | - |
-| **Total** | - | **42 hours** | - |
+⚠️ **These hour estimates are rough guesses, not measurements.** Use them for relative sizing (phase 4 is bigger than phase 1), not for scheduling or commitments.
 
-Realistic timeline: 2-3 weeks part-time, 1 week full-time
+| Phase | Task | Model | Hours | Difficulty |
+|-------|------|-------|-------|------------|
+| 1 | Backend setup | Haiku 4.5 | 2 | Easy |
+| 2 | Entities & repos | Haiku 4.5 | 3 | Easy |
+| 3 | JWT auth | **Opus 5** | 4 | Medium |
+| 4 | Inquiry CRUD | Sonnet 5 | 5 | Medium |
+| 5 | Inspection CRUD | Sonnet 5 | 5 | Medium |
+| 6 | Testing & errors | Sonnet 5 | 4 | Medium |
+| - | Backend subtotal | - | **23 hours** | - |
+| 1 | Frontend setup & login | Sonnet 5 | 3 | Easy |
+| 2 | Inquiry management | Sonnet 5 | 6 | Medium |
+| 3 | Inspection management | Sonnet 5 | 6 | Medium |
+| 4 | Polish & responsive | Sonnet 5 | 4 | Medium |
+| - | Frontend subtotal | - | **19 hours** | - |
+| **Total** | - | - | **42 hours** | - |
+
+Rough timeline: 2-3 weeks part-time, 1 week full-time
 
 ---
 
-## 9. Notes for Smaller Models
+## 9. Notes for Whoever Implements This
+
+**Respect the model switches.** See §0 for the full strategy. If you are a model working through this plan and you reach a 🛑 SWITCH banner, stop and tell the user to switch — don't carry on into the next phase on the wrong model. Phase 3 in particular should not be written by a small model.
 
 **Keep it simple:**
 - Start with Phase 1-2 (setup, entities) — get comfortable
@@ -558,6 +635,10 @@ Realistic timeline: 2-3 weeks part-time, 1 week full-time
 - Phases 4-5 are repetitive CRUD; use phase 4 as template for phase 5
 - Frontend is mostly copy-paste tables/forms; Tailwind docs are your friend
 - Test as you go (don't wait until the end)
+
+**Two things this plan leaves open** — decide them before or during Phase 3:
+- **How does Alberto's account get created?** There's a login endpoint but no registration (deliberate — no public signup on an admin tool). The first user needs a manual insert with a BCrypt-hashed password, either via a seed script or a one-off SQL statement.
+- **`scheduled_date DATETIME` + `scheduled_time TIME` in the schema is redundant** — one `DATETIME` covers both. Left as-is to match the DTOs, but it's the kind of split that causes bugs when the two disagree. Cheap to collapse now, annoying later.
 
 **Resources:**
 - Spring Boot docs: https://spring.io/projects/spring-boot
