@@ -602,14 +602,13 @@ are not vacuous.
 Backend — **Sonnet 5**:
 - [x] 4.1 Inquiry controller & service
 - [x] 4.2 Inquiry DTOs
-- [ ] 5.1 Inspection controller & service
-- [ ] 5.2 Inspection DTOs
+- [x] 5.1 Inspection controller & service
+- [x] 5.2 Inspection DTOs
 - [ ] 6.1 Global exception handler
 - [ ] 6.2 Integration tests
 - [ ] 6.3 Postman collection
 
-Phase 4 landed with 15 new tests (37 total, `mvn test`). Notes for whoever picks up
-Phase 5, since it reuses this phase's patterns directly:
+Phase 4 landed with 15 new tests (37 total, `mvn test`). Notes that carried into Phase 5:
 
 - **`projectType` serializes as the display label** ("Custom Shower"), not the enum
   constant name, via `@JsonValue`/`@JsonCreator` on `Inquiry.ProjectType`. This matches
@@ -617,19 +616,39 @@ Phase 5, since it reuses this phase's patterns directly:
   already sends (`index.html`'s `<select name="projectType">`) — the two had drifted
   apart before this phase. JPA storage is unaffected (`@Enumerated(EnumType.STRING)`
   still persists `CUSTOM_SHOWER`); Jackson and JPA serialize independently.
-- **`NotFoundException`** (`com.octileinstall.exception`) is now shared, not
-  Inquiry-specific — Phase 5's acceptance criteria ("creating an inspection for a
-  non-existent inquiry returns 404") should throw this same exception rather than
-  invent a second one. Each controller still maps it locally via `@ExceptionHandler`;
-  Phase 6 centralizes this into one `@ControllerAdvice`.
+- **`NotFoundException`** (`com.octileinstall.exception`) is shared, not Inquiry-specific
+  — Phase 5 reused it directly for the "inspection references a nonexistent inquiry" 404
+  rather than inventing a second exception type. Each controller still maps it locally
+  via `@ExceptionHandler`; Phase 6 centralizes this into one `@ControllerAdvice`.
 - **PUT is a partial update**: a field omitted from the request body is left
-  unchanged, not nulled out. `InspectionUpdateRequest` should follow the same
-  only-apply-non-null-fields pattern as `InquiryService.update()` — this was
-  mutation-tested (unconditionally overwriting both fields fails 2 tests) precisely
-  because "just assign both fields" is the natural-looking simplification that breaks it.
+  unchanged, not nulled out. This was mutation-tested in both Phase 4 and Phase 5
+  (unconditionally overwriting the fields fails the tests) precisely because "just
+  assign both fields" is the natural-looking simplification that breaks it.
 - **Pagination assumes `offset` is page-aligned** (`offset = page * limit`); an
   unaligned offset rounds down to its containing page rather than erroring. Documented
-  in `InquiryService.list()` — reuse the same approach rather than re-deriving it.
+  in `InquiryService.list()` and reused as-is in `InspectionService.list()`.
+
+Phase 5 landed with 21 new tests (58 total, `mvn test`). Notes for whoever picks up
+Phase 6:
+
+- **`ValidationException`** (`com.octileinstall.exception`) is new this phase, for the
+  "scheduled date must be in the future" business rule — a runtime check that Bean
+  Validation can't express since it depends on the current clock, not a fixed
+  constraint. Mapped to 400 locally on `InspectionController` for now, same pattern as
+  `NotFoundException`; Phase 6 should absorb both into the global handler.
+- **The future-date check only runs when `scheduledDate` is actually present in a PUT
+  body.** Marking an already-past inspection COMPLETED must not be blocked by it — that
+  is the normal way a completed inspection gets closed out. This was mutation-tested
+  two ways: validating unconditionally on every update blocks legitimate past-inspection
+  status changes (1 test), and validating against the *old* date instead of the
+  *incoming* one lets a past-date reschedule slip through unvalidated (a second, separate
+  test). Both failed under the mutation; see `InspectionService.update()`.
+- **`?from=`/`?to=` are calendar dates, not full datetimes**, expanded to day boundaries
+  in `InspectionService` (`atStartOfDay()` / `atTime(LocalTime.MAX)`) since
+  `scheduledDate` is a `LocalDateTime`. An absent bound is unbounded in that direction,
+  not defaulted to "today". Spring's default JSR-310 converter binds the query param to
+  `LocalDate` with no `@DateTimeFormat` annotation needed — confirmed by the date-range
+  integration tests actually passing, not just assumed.
 
 Frontend — **Sonnet 5** (no switch):
 - [ ] 1.1 React + Vite setup

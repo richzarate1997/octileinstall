@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface InspectionRepository extends JpaRepository<Inspection, Long> {
-    Page<Inspection> findByScheduledDateBetweenOrderByScheduledDateAsc(
-            LocalDateTime from, LocalDateTime to, Pageable pageable);
-
     Page<Inspection> findByStatus(Inspection.Status status, Pageable pageable);
 
-    Page<Inspection> findByOrderByScheduledDateAsc(Pageable pageable);
+    Page<Inspection> findByScheduledDateBetween(LocalDateTime from, LocalDateTime to, Pageable pageable);
+
+    Page<Inspection> findByScheduledDateBetweenAndStatus(
+            LocalDateTime from, LocalDateTime to, Inspection.Status status, Pageable pageable);
 }
