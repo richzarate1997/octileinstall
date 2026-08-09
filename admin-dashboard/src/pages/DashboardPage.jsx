@@ -1,27 +1,61 @@
-import { useAuth } from '../context/AuthContext';
+import { useEffect, useState } from 'react';
+import StatCard from '../components/StatCard';
+import { extractErrorMessage } from '../services/api';
+import { getInquiriesCount } from '../services/inquiries';
+import { getInspectionsCount } from '../services/inspections';
 
-// Minimal placeholder so the Phase 1 login->redirect flow has a real destination to prove
-// itself against. Stats cards, inquiry/inspection summaries, etc. are Phase 2.
 export default function DashboardPage() {
-  const { user, logout } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadStats() {
+      setLoading(true);
+      setError('');
+      try {
+        const [total, newCount, scheduledInspections] = await Promise.all([
+          getInquiriesCount(),
+          getInquiriesCount({ status: 'NEW' }),
+          getInspectionsCount({ status: 'SCHEDULED' }),
+        ]);
+        if (!cancelled) {
+          setStats({ total, newCount, scheduledInspections });
+        }
+      } catch (err) {
+        if (!cancelled) setError(extractErrorMessage(err));
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadStats();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 p-8 text-white">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Dashboard</h1>
-        <button
-          onClick={logout}
-          className="rounded bg-slate-800 px-3 py-1.5 text-sm hover:bg-slate-700"
-        >
-          Log out
-        </button>
-      </div>
-      <p className="mt-4 text-slate-300">
-        Logged in as {user?.fullName} ({user?.email}) — role: {user?.role}
-      </p>
-      <p className="mt-2 text-sm text-slate-500">
-        Inquiry and inspection management land in Phases 2/3.
-      </p>
+    <div>
+      <h1 className="text-xl font-semibold text-white">Dashboard</h1>
+
+      {error && (
+        <p role="alert" className="mt-4 rounded bg-red-950 px-3 py-2 text-sm text-red-300">
+          {error}
+        </p>
+      )}
+
+      {loading ? (
+        <p className="mt-4 text-slate-400">Loading…</p>
+      ) : stats ? (
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <StatCard label="Total Inquiries" value={stats.total} />
+          <StatCard label="New Inquiries" value={stats.newCount} />
+          <StatCard label="Scheduled Inspections" value={stats.scheduledInspections} />
+        </div>
+      ) : null}
     </div>
   );
 }

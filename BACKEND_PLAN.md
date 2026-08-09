@@ -688,9 +688,9 @@ Frontend — **Sonnet 5** (no switch):
 - [x] 1.1 React + Vite setup
 - [x] 1.2 Login page
 - [x] 1.3 Auth context & private routes
-- [ ] 2.1 Dashboard page
-- [ ] 2.2 Inquiries page & table
-- [ ] 2.3 Inquiry form (create/edit)
+- [x] 2.1 Dashboard page
+- [x] 2.2 Inquiries page & table
+- [x] 2.3 Inquiry form (create/edit)
 - [ ] 3.1 Inspections page
 - [ ] 3.2 Inspection form (create/edit/reschedule)
 - [ ] 4.1 Tailwind styling
@@ -737,6 +737,53 @@ top of this:
   Spring Boot backend (see [[jdk17-required-for-backend]]), and wiring MySQL credentials
   into a committed `.claude/launch.json` isn't safe to do here. Worth one manual
   full-stack login check on the user's own machine before Phase 2.
+
+Frontend Phase 2 landed (Dashboard stats, Inquiries table/filter/pagination, create/edit
+form, detail modal with inspection history, delete confirmation). Notes for whoever picks
+up Phase 3, since Inspection management follows the exact same patterns:
+
+- **Edit only ever sends `{status, notes}`, matching `PUT /api/inquiry/{id}`'s real
+  contract exactly** (see Phase 4) — `InquiryForm` renders a completely different field
+  set in edit mode (status + notes) vs. create mode (customer info + project type +
+  message), rather than showing customer-info fields that a PUT would silently ignore.
+  The plan's Phase 2 acceptance criteria says "edit inquiry details and status," which
+  reads like customer-info editing should be possible — it isn't, today. If that's
+  actually wanted, it needs a new backend endpoint/DTO (reopening "finished" Phase 4),
+  which wasn't done here since it wasn't asked for explicitly. Flagging it rather than
+  silently deciding either way.
+- **`Inquiry.projectType` dropdown options are the exact canonical backend display
+  strings** ("Flooring - Tile, Marble & Mosaic", not the shorter "Flooring" that
+  `index.html`'s own quote-request form submits). This matters for round-tripping: GET
+  responses always echo the canonical label, so an edit form's pre-filled dropdown has to
+  use the same strings its own `<option>`s offer, or the selected value won't match any
+  option.
+- **The backend has no `?inquiryId=` filter on `/api/inspection`** (Phase 5 only supports
+  `status`/date-range). `InquiryDetailModal`'s "Inspection History" section works around
+  this by fetching a `limit=100` page and filtering client-side
+  (`services/inspections.js`'s `listInspectionsForInquiry()`) — correct today at this
+  admin tool's expected per-inquiry inspection count, but not something that scales. If
+  Phase 3 needs inquiry-scoped inspection queries anywhere else, add a real backend filter
+  rather than copying this workaround a second time.
+- **Dashboard stats reuse the existing pagination contract** rather than needing a new
+  endpoint: `GET /api/inquiry?limit=1&status=NEW` returns `total` as the *full* matching
+  count regardless of the requested page size (`Page.getTotalElements()`, proven by
+  Phase 4's own pagination tests), so `getInquiriesCount()`/`getInspectionsCount()` just
+  read `.total` off a minimal-size request. No `/api/stats` endpoint exists or is needed.
+- **A failed refetch doesn't clear existing data** — `InquiriesPage`'s error state is
+  deliberately checked as `error && inquiries.length === 0` before suppressing the table,
+  not just `error` alone. A delete-triggered refetch that fails should keep showing the
+  last-known-good rows alongside the error, not blank the screen; only a first-load
+  failure (genuinely nothing to show) suppresses the table. Caught this while testing
+  against no backend, before it shipped.
+- **Verified live against a real (backend-less) browser session**, same approach as Phase
+  1: confirmed exact request URLs/params for the stats queries, the status filter, and
+  the create POST via network inspection; confirmed the create form preserves entered
+  values and re-enables its Save button after a failed submit; confirmed the table
+  correctly disappears (not "No inquiries found") when the initial load fails. Not
+  interactively tested: Edit/Delete/Detail-modal row actions, since no backend means no
+  rows exist to click - these reuse the exact same modal/error-handling patterns already
+  verified for Create, just with different field sets, confirmed by direct code review
+  rather than a click-through.
 
 ---
 
