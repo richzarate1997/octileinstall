@@ -604,9 +604,9 @@ Backend — **Sonnet 5**:
 - [x] 4.2 Inquiry DTOs
 - [x] 5.1 Inspection controller & service
 - [x] 5.2 Inspection DTOs
-- [ ] 6.1 Global exception handler
-- [ ] 6.2 Integration tests
-- [ ] 6.3 Postman collection
+- [x] 6.1 Global exception handler
+- [x] 6.2 Integration tests
+- [x] 6.3 Postman collection
 
 Phase 4 landed with 15 new tests (37 total, `mvn test`). Notes that carried into Phase 5:
 
@@ -649,6 +649,40 @@ Phase 6:
   not defaulted to "today". Spring's default JSR-310 converter binds the query param to
   `LocalDate` with no `@DateTimeFormat` annotation needed — confirmed by the date-range
   integration tests actually passing, not just assumed.
+
+Phase 6 landed with 7 new tests (65 total, `mvn test`) plus a Postman collection at
+`backend/postman/OctileInstall-Backend.postman_collection.json`. Notes for whoever picks
+up frontend work, since it's the first thing that will actually consume these responses:
+
+- **`GlobalExceptionHandler`** (`com.octileinstall.exception`) now owns every error
+  response. The per-controller local `@ExceptionHandler` methods from Phases 3–5 are
+  gone — `AuthController`, `InquiryController`, and `InspectionController` no longer
+  handle exceptions themselves. `AuthService.login()` now throws the new
+  `UnauthorizedException` instead of Spring Security's `BadCredentialsException`, so
+  every application-thrown error (`NotFoundException`, `ValidationException`,
+  `UnauthorizedException`) is one consistent custom-exception family.
+- **Every error response shares one shape**: `{status, error, message}`, plus
+  `fieldErrors` (a field→message map) specifically for `@Valid` failures. This covers
+  `NotFoundException`→404, `ValidationException`→400, `UnauthorizedException`→401, bean
+  validation→400, malformed JSON or a bad enum value in a request body→400, a
+  query/path param that won't convert (`?limit=abc`, `?status=BOGUS`)→400, and anything
+  unanticipated→500.
+- **The 500 handler never echoes the real exception message to the client** — it logs
+  the full exception server-side and returns a fixed, generic message. Mutation-tested:
+  changing it to return `e.getMessage()` instead of the fixed string fails the test
+  that specifically asserts the client-visible message doesn't contain the (deliberately
+  sensitive-looking) mock exception text used in that test.
+- **Not handled by the global advice on purpose**: Spring Security's
+  `AuthenticationException`/`AccessDeniedException`. Those are resolved inside the
+  security filter chain (`SecurityConfig`'s `authenticationEntryPoint` /
+  `accessDeniedHandler`) before a request ever reaches a controller, so this doesn't
+  affect today's 401/403 responses. But `@EnableMethodSecurity` has been on since Phase
+  3 with nothing using `@PreAuthorize` yet — the first controller method that adds one
+  and throws `AccessDeniedException` from inside its body WOULD reach the generic
+  `Exception` handler first via Spring MVC's own resolution order, turning a correct 403
+  into a misleading 500. See the comment on `GlobalExceptionHandler` for the fix
+  (an explicit rethrowing handler) to add at that point — not added now since no code
+  path can trigger it yet.
 
 Frontend — **Sonnet 5** (no switch):
 - [ ] 1.1 React + Vite setup

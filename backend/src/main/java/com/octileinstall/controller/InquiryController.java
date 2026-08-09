@@ -5,7 +5,6 @@ import com.octileinstall.dto.InquiryDTO;
 import com.octileinstall.dto.InquiryUpdateRequest;
 import com.octileinstall.dto.PagedResponse;
 import com.octileinstall.entity.Inquiry;
-import com.octileinstall.exception.NotFoundException;
 import com.octileinstall.security.UserPrincipal;
 import com.octileinstall.service.InquiryService;
 import jakarta.validation.Valid;
@@ -14,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/inquiry")
@@ -56,14 +53,5 @@ public class InquiryController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         inquiryService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    /** Local handler so this phase stands on its own; Phase 6's @ControllerAdvice will absorb it. */
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFound(NotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                "status", HttpStatus.NOT_FOUND.value(),
-                "error", "Not Found",
-                "message", e.getMessage()));
     }
 }

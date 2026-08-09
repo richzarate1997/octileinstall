@@ -3,10 +3,10 @@ package com.octileinstall.service;
 import com.octileinstall.dto.LoginRequest;
 import com.octileinstall.dto.LoginResponse;
 import com.octileinstall.entity.User;
+import com.octileinstall.exception.UnauthorizedException;
 import com.octileinstall.repository.UserRepository;
 import com.octileinstall.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,9 +50,9 @@ public class AuthService {
     /**
      * Verifies credentials and issues a token.
      *
-     * @throws BadCredentialsException if the email is unknown or the password does not match.
-     *                                 The message is deliberately identical in both cases so the
-     *                                 response never reveals whether an account exists.
+     * @throws UnauthorizedException if the email is unknown or the password does not match.
+     *                                The message is deliberately identical in both cases so the
+     *                                response never reveals whether an account exists.
      */
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
@@ -67,7 +67,7 @@ public class AuthService {
 
         if (found.isEmpty() || !passwordMatches) {
             log.info("Failed login attempt for email {}", email);
-            throw new BadCredentialsException("Invalid email or password");
+            throw new UnauthorizedException("Invalid email or password");
         }
 
         User user = found.get();

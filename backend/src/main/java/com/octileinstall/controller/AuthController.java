@@ -6,9 +6,7 @@ import com.octileinstall.security.UserPrincipal;
 import com.octileinstall.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,16 +40,5 @@ public class AuthController {
                 "email", principal.getEmail(),
                 "fullName", principal.getFullName(),
                 "role", principal.getRole().name()));
-    }
-
-    /**
-     * Local handler so Phase 3 stands on its own; the Phase 6 @ControllerAdvice can absorb it later.
-     */
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
-                "status", HttpStatus.UNAUTHORIZED.value(),
-                "error", "Unauthorized",
-                "message", e.getMessage()));
     }
 }

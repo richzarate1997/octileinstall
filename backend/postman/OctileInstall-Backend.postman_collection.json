@@ -1,0 +1,393 @@
+{
+  "info": {
+    "name": "OctileInstall Backend",
+    "description": "Manual test collection for the OctileInstall admin API (BACKEND_PLAN.md Phase 6). Run \"Auth > Login\" first - it captures the JWT into the {{token}} collection variable, which every other request uses automatically. \"Inquiries > Create Inquiry\" and \"Inspections > Create Inspection\" similarly capture {{inquiryId}} / {{inspectionId}} for the requests below them.\n\nSet {{baseUrl}} to your running instance (default: http://localhost:8081) and {{loginEmail}} / {{loginPassword}} to a real admin account before running Login - see backend/src/main/java/com/octileinstall/config/DataSeeder.java for how the first admin account gets created.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081" },
+    { "key": "loginEmail", "value": "alberto@octileinstall.com" },
+    { "key": "loginPassword", "value": "" },
+    { "key": "token", "value": "" },
+    { "key": "inquiryId", "value": "" },
+    { "key": "inspectionId", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{loginEmail}}\",\n  \"password\": \"{{loginPassword}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] },
+            "description": "Happy path: 200 with a JWT. The test script below stores it in {{token}} so every other request in this collection is authenticated automatically."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login succeeds with a token', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var body = pm.response.json();",
+                  "    pm.expect(body.token).to.be.a('string').and.not.empty;",
+                  "    pm.collectionVariables.set('token', body.token);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login - wrong password (401)",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{loginEmail}}\",\n  \"password\": \"definitely-not-the-password\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] },
+            "description": "Error path: 401 with the standard {status, error, message} shape, and the message never reveals whether the account exists."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Wrong password returns 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "    pm.expect(pm.response.json().error).to.eql('Unauthorized');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Current User (/me)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] },
+            "description": "Proves the JWT is accepted and the SecurityContext is populated - returns the caller's own identity."
+          }
+        },
+        {
+          "name": "Get Current User - no token (401)",
+          "request": {
+            "method": "GET",
+            "auth": { "type": "noauth" },
+            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] },
+            "description": "Error path: every /api route except /api/auth/login requires a bearer token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('No token returns 401', function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Inquiries",
+      "item": [
+        {
+          "name": "List Inquiries",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/inquiry?limit=20&offset=0",
+              "host": ["{{baseUrl}}"], "path": ["api", "inquiry"],
+              "query": [{ "key": "limit", "value": "20" }, { "key": "offset", "value": "0" }]
+            },
+            "description": "Sorted by created_at DESC. Response shape: { data: [...], total: N }."
+          }
+        },
+        {
+          "name": "List Inquiries - filter by status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/inquiry?status=NEW",
+              "host": ["{{baseUrl}}"], "path": ["api", "inquiry"],
+              "query": [{ "key": "status", "value": "NEW" }]
+            }
+          }
+        },
+        {
+          "name": "Create Inquiry",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"John Doe\",\n  \"customerEmail\": \"john@example.com\",\n  \"customerPhone\": \"(714) 555-1234\",\n  \"projectType\": \"Custom Shower\",\n  \"city\": \"Irvine\",\n  \"message\": \"Looking for a custom shower design.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/inquiry", "host": ["{{baseUrl}}"], "path": ["api", "inquiry"] },
+            "description": "201 Created. projectType accepts the human-readable label (\"Custom Shower\"), matching the public site's quote form - not the CUSTOM_SHOWER enum constant name."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Create inquiry returns 201 with NEW status', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var body = pm.response.json();",
+                  "    pm.expect(body.status).to.eql('NEW');",
+                  "    pm.collectionVariables.set('inquiryId', body.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Inquiry - missing required fields (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"customerName\": \"\",\n  \"customerEmail\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/inquiry", "host": ["{{baseUrl}}"], "path": ["api", "inquiry"] },
+            "description": "Error path: 400 with a fieldErrors map naming each invalid field."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Blank required fields return 400 with fieldErrors', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "    pm.expect(pm.response.json().fieldErrors).to.have.property('customerName');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Inquiry by Id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/inquiry/{{inquiryId}}", "host": ["{{baseUrl}}"], "path": ["api", "inquiry", "{{inquiryId}}"] },
+            "description": "Run \"Create Inquiry\" first so {{inquiryId}} is populated."
+          }
+        },
+        {
+          "name": "Get Inquiry by Id - not found (404)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/inquiry/999999", "host": ["{{baseUrl}}"], "path": ["api", "inquiry", "999999"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Unknown id returns 404', function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Inquiry (status + notes)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONTACTED\",\n  \"notes\": \"Called customer, scheduled site visit for next week.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/inquiry/{{inquiryId}}", "host": ["{{baseUrl}}"], "path": ["api", "inquiry", "{{inquiryId}}"] },
+            "description": "Partial update - only the fields present in the body are changed."
+          }
+        },
+        {
+          "name": "Delete Inquiry",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/inquiry/{{inquiryId}}", "host": ["{{baseUrl}}"], "path": ["api", "inquiry", "{{inquiryId}}"] },
+            "description": "204 No Content. Run this last - it removes the inquiry {{inquiryId}} points at."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Delete returns 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Inspections",
+      "item": [
+        {
+          "name": "List Inspections",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/inspection", "host": ["{{baseUrl}}"], "path": ["api", "inspection"] },
+            "description": "Sorted by scheduled_date ASC."
+          }
+        },
+        {
+          "name": "List Inspections - date range + status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/inspection?from=2027-01-01&to=2027-12-31&status=SCHEDULED",
+              "host": ["{{baseUrl}}"], "path": ["api", "inspection"],
+              "query": [
+                { "key": "from", "value": "2027-01-01" },
+                { "key": "to", "value": "2027-12-31" },
+                { "key": "status", "value": "SCHEDULED" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Inspection",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inquiryId\": {{inquiryId}},\n  \"scheduledDate\": \"2027-06-10T14:00:00\",\n  \"location\": \"123 Main St, Irvine, CA 92614\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/inspection", "host": ["{{baseUrl}}"], "path": ["api", "inspection"] },
+            "description": "Run \"Inquiries > Create Inquiry\" first so {{inquiryId}} points at a real inquiry. scheduledDate must be in the future - a single ISO-8601 datetime (see BACKEND_PLAN.md §9 on why there's no separate time field)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Create inspection returns 201 with SCHEDULED status', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var body = pm.response.json();",
+                  "    pm.expect(body.status).to.eql('SCHEDULED');",
+                  "    pm.collectionVariables.set('inspectionId', body.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Inspection - unknown inquiry (404)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inquiryId\": 999999,\n  \"scheduledDate\": \"2027-06-10T14:00:00\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/inspection", "host": ["{{baseUrl}}"], "path": ["api", "inspection"] },
+            "description": "Error path named explicitly in BACKEND_PLAN.md's Phase 5 acceptance criteria."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Unknown inquiryId returns 404', function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Inspection - past date (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inquiryId\": {{inquiryId}},\n  \"scheduledDate\": \"2020-01-01T09:00:00\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/inspection", "host": ["{{baseUrl}}"], "path": ["api", "inspection"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Past scheduledDate returns 400', function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Inspection by Id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}", "host": ["{{baseUrl}}"], "path": ["api", "inspection", "{{inspectionId}}"] }
+          }
+        },
+        {
+          "name": "Update Inspection (reschedule)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"scheduledDate\": \"2027-07-01T09:00:00\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}", "host": ["{{baseUrl}}"], "path": ["api", "inspection", "{{inspectionId}}"] },
+            "description": "Rescheduling is also validated as a future date."
+          }
+        },
+        {
+          "name": "Update Inspection (mark completed)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\",\n  \"notes\": \"Inspection completed. Design finalized with customer.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}", "host": ["{{baseUrl}}"], "path": ["api", "inspection", "{{inspectionId}}"] },
+            "description": "Status-only updates are never blocked by the future-date check, even once the inspection's date has passed - that's the normal way a completed inspection gets closed out."
+          }
+        },
+        {
+          "name": "Delete Inspection",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}", "host": ["{{baseUrl}}"], "path": ["api", "inspection", "{{inspectionId}}"] },
+            "description": "204 No Content. Run this last."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Delete returns 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

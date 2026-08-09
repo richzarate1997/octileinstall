@@ -5,8 +5,6 @@ import com.octileinstall.dto.InspectionDTO;
 import com.octileinstall.dto.InspectionUpdateRequest;
 import com.octileinstall.dto.PagedResponse;
 import com.octileinstall.entity.Inspection;
-import com.octileinstall.exception.NotFoundException;
-import com.octileinstall.exception.ValidationException;
 import com.octileinstall.service.InspectionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/inspection")
@@ -56,22 +53,5 @@ public class InspectionController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         inspectionService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    /** Local handlers so this phase stands on its own; Phase 6's @ControllerAdvice will absorb them. */
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFound(NotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                "status", HttpStatus.NOT_FOUND.value(),
-                "error", "Not Found",
-                "message", e.getMessage()));
-    }
-
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Map<String, Object>> handleValidation(ValidationException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
-                "status", HttpStatus.BAD_REQUEST.value(),
-                "error", "Bad Request",
-                "message", e.getMessage()));
     }
 }
