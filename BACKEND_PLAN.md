@@ -544,7 +544,7 @@ Response (200 OK): { updated inspection }
 2. **Set up frontend locally**
    - Clone/pull repo, `cd admin-dashboard`
    - `npm install`
-   - `npm run dev` (starts on 5173)
+   - `npm run dev` (starts on 5177 — Vite's default 5173-5176 were all taken by other local dev servers)
    - Update `.env` to point to backend API
 
 3. **Test workflow**
@@ -685,9 +685,9 @@ up frontend work, since it's the first thing that will actually consume these re
   path can trigger it yet.
 
 Frontend — **Sonnet 5** (no switch):
-- [ ] 1.1 React + Vite setup
-- [ ] 1.2 Login page
-- [ ] 1.3 Auth context & private routes
+- [x] 1.1 React + Vite setup
+- [x] 1.2 Login page
+- [x] 1.3 Auth context & private routes
 - [ ] 2.1 Dashboard page
 - [ ] 2.2 Inquiries page & table
 - [ ] 2.3 Inquiry form (create/edit)
@@ -696,6 +696,47 @@ Frontend — **Sonnet 5** (no switch):
 - [ ] 4.1 Tailwind styling
 - [ ] 4.2 Responsive design
 - [ ] 4.3 Toast notifications & confirmations
+
+Frontend Phase 1 landed. Notes for whoever picks up Phase 2, since it builds directly on
+top of this:
+
+- **Node on this machine is v16.18.0** (Vite 5+/Tailwind v4 need 18+). `package.json`
+  deliberately pins `vite@^4` and `tailwindcss@^3` — both fully Node-16-compatible.
+  `npm install` prints `EBADENGINE` warnings for a couple of transitive deps anyway; they're
+  warnings only, `npm run build` and `npm run dev` both work. Don't "fix" this by bumping
+  major versions without confirming Node itself has also been upgraded.
+- **Dev server runs on port 5177, not Vite's default 5173.** Ports 5173–5176 were all
+  already held by other local dev servers on this machine. The backend's
+  `app.cors.allowed-origins` (`application.properties`) is set to match 5177 exactly — if
+  the dev port ever needs to change again, update both sides together or every request
+  will fail CORS.
+- **`services/api.js`** is the one place that talks to the backend: an axios instance with
+  a request interceptor attaching `Authorization: Bearer <token>` from localStorage, a
+  response interceptor that clears storage and fires a same-window `auth:unauthorized`
+  event on any 401 (covers an expired token discovered mid-session, not just a missing
+  one), and `extractErrorMessage()`, which unwraps the backend's `{status, error, message,
+  fieldErrors}` shape (see Phase 6) into a single string. Phase 2/3's Inquiry/Inspection
+  API calls should reuse this `api` instance and `extractErrorMessage()` rather than
+  duplicating error handling per page.
+- **`AuthContext`** owns the token/user state and listens for `auth:unauthorized` (fired
+  from `api.js`, which can't call `useNavigate` itself since it's outside the React tree).
+  `isAuthenticated` is a plain `Boolean(token)` check — no round-trip to `/api/auth/me` to
+  validate it. A stale-but-present token will look "authenticated" until the first real
+  API call 401s, at which point the interceptor above kicks in and redirects.
+- **`DashboardPage` is a placeholder** ("Logged in as X — role: Y", a logout button) —
+  it exists only so Phase 1's login→redirect flow had somewhere real to land. Phase 2
+  replaces its contents with actual stats; the route (`/`) and the fact that it's behind
+  `PrivateRoute` don't need to change.
+- **Verified live in a real browser** (Vite dev server via `preview_start`, not just a
+  production build): unauthenticated `/` correctly redirects to `/login`; submitting bad
+  credentials shows the alert and re-enables the form; a token written to localStorage
+  correctly grants access to the dashboard and renders the stored user's name/email/role;
+  logout clears both localStorage keys and returns to `/login`. The one thing *not*
+  verified end-to-end is an actual successful `POST /api/auth/login` round-trip against a
+  running backend — this sandbox can start the Vite dev server but still cannot start the
+  Spring Boot backend (see [[jdk17-required-for-backend]]), and wiring MySQL credentials
+  into a committed `.claude/launch.json` isn't safe to do here. Worth one manual
+  full-stack login check on the user's own machine before Phase 2.
 
 ---
 
