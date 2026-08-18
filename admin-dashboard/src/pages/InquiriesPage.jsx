@@ -3,12 +3,15 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import InquiryDetailModal from '../components/InquiryDetailModal';
 import InquiryForm from '../components/InquiryForm';
 import InquiryTable from '../components/InquiryTable';
+import Spinner from '../components/Spinner';
+import { useToast } from '../context/ToastContext';
 import { extractErrorMessage } from '../services/api';
 import { deleteInquiry, INQUIRY_STATUSES, listInquiries } from '../services/inquiries';
 
 const PAGE_SIZE = 20;
 
 export default function InquiriesPage() {
+  const { showToast } = useToast();
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(0);
   const [inquiries, setInquiries] = useState([]);
@@ -54,9 +57,12 @@ export default function InquiriesPage() {
     try {
       await deleteInquiry(deletingInquiry.id);
       setDeletingInquiry(null);
+      showToast('Inquiry deleted');
       await refetch();
     } catch (err) {
-      setError(extractErrorMessage(err));
+      // A toast, not the page-level `error` banner: the list itself didn't fail to load,
+      // only this one action did - the banner is reserved for "the page state is broken."
+      showToast(extractErrorMessage(err), 'error');
       setDeletingInquiry(null);
     } finally {
       setDeleting(false);
@@ -67,17 +73,17 @@ export default function InquiriesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-white">Inquiries</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl tracking-wide text-white">Inquiries</h1>
         <button
           onClick={() => setFormState({ mode: 'create' })}
-          className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500"
+          className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-500"
         >
           New Inquiry
         </button>
       </div>
 
-      <div className="mt-4 flex items-center gap-3">
+      <div className="mt-4 flex flex-wrap items-center gap-3">
         <label htmlFor="status-filter" className="text-sm text-slate-400">
           Status
         </label>
@@ -103,21 +109,26 @@ export default function InquiriesPage() {
       )}
 
       {loading ? (
-        <p className="mt-6 text-slate-400">Loading…</p>
+        <div className="mt-6 flex items-center gap-2 text-slate-400">
+          <Spinner size="sm" />
+          <span>Loading…</span>
+        </div>
       ) : error && inquiries.length === 0 ? null : (
         // A failed refetch (e.g. after a delete) leaves `inquiries` holding the last
         // successful load rather than clearing it, so this only suppresses the table when
         // there's truly nothing to show - it must not also hide still-valid stale data
         // just because a later action errored.
         <>
-          <InquiryTable
-            inquiries={inquiries}
-            onView={setViewingInquiry}
-            onEdit={(inquiry) => setFormState({ mode: 'edit', inquiry })}
-            onDelete={setDeletingInquiry}
-          />
+          <div className="overflow-x-auto">
+            <InquiryTable
+              inquiries={inquiries}
+              onView={setViewingInquiry}
+              onEdit={(inquiry) => setFormState({ mode: 'edit', inquiry })}
+              onDelete={setDeletingInquiry}
+            />
+          </div>
 
-          <div className="mt-4 flex items-center justify-between text-sm text-slate-400">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-400">
             <span>{total} total</span>
             <div className="flex items-center gap-3">
               <button
@@ -148,7 +159,9 @@ export default function InquiriesPage() {
           inquiry={formState.inquiry}
           onClose={() => setFormState(null)}
           onSaved={() => {
+            const wasEdit = formState.mode === 'edit';
             setFormState(null);
+            showToast(wasEdit ? 'Inquiry updated' : 'Inquiry created');
             refetch();
           }}
         />

@@ -13,8 +13,8 @@ export default function InspectionTable({ inspections, inquiryNames, onEdit, onR
   }
 
   return (
-    <table className="mt-6 w-full text-left text-sm text-slate-300">
-      <thead className="border-b border-slate-800 text-xs uppercase text-slate-500">
+    <table className="mt-6 w-full min-w-[720px] text-left text-sm text-slate-300">
+      <thead className="border-b border-slate-800 font-label text-xs uppercase tracking-wide text-slate-500">
         <tr>
           <th className="py-2 pr-4">Date &amp; Time</th>
           <th className="py-2 pr-4">Inquiry</th>

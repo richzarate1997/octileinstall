@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Spinner from '../components/Spinner';
 import StatCard from '../components/StatCard';
 import { extractErrorMessage } from '../services/api';
 import { getInquiriesCount } from '../services/inquiries';
@@ -39,7 +40,7 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-white">Dashboard</h1>
+      <h1 className="text-2xl tracking-wide text-white">Dashboard</h1>
 
       {error && (
         <p role="alert" className="mt-4 rounded bg-red-950 px-3 py-2 text-sm text-red-300">
@@ -48,7 +49,10 @@ export default function DashboardPage() {
       )}
 
       {loading ? (
-        <p className="mt-4 text-slate-400">Loading…</p>
+        <div className="mt-6 flex items-center gap-2 text-slate-400">
+          <Spinner size="sm" />
+          <span>Loading…</span>
+        </div>
       ) : stats ? (
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <StatCard label="Total Inquiries" value={stats.total} />

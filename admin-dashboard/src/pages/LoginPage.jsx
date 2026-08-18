@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Spinner from '../components/Spinner';
 import { useAuth } from '../context/AuthContext';
 import { extractErrorMessage } from '../services/api';
 
@@ -34,7 +35,7 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm space-y-4 rounded-lg bg-slate-900 p-8 shadow-xl"
       >
-        <h1 className="text-xl font-semibold text-white">OC Tile Install — Admin</h1>
+        <h1 className="text-xl tracking-wide text-white">OC Tile Install — Admin</h1>
 
         {error && (
           <p role="alert" className="rounded bg-red-950 px-3 py-2 text-sm text-red-300">
@@ -75,8 +76,9 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded bg-blue-600 px-3 py-2 font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded bg-blue-600 px-3 py-2 font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
         >
+          {submitting && <Spinner size="sm" />}
           {submitting ? 'Signing in…' : 'Sign In'}
         </button>
       </form>

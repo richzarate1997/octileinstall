@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Spinner from './Spinner';
 import { extractErrorMessage } from '../services/api';
 import { listInquiries } from '../services/inquiries';
 import { createInspection, INSPECTION_STATUSES, updateInspection } from '../services/inspections';
@@ -197,8 +198,9 @@ export default function InspectionForm({ mode, inspection, onClose, onSaved }) {
           <button
             type="submit"
             disabled={submitting || (!isEdit && !inquiryId)}
-            className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
+            {submitting && <Spinner size="sm" />}
             {submitting ? 'Saving…' : 'Save'}
           </button>
         </div>

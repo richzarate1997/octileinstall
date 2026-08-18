@@ -6,8 +6,10 @@ export default function InquiryTable({ inquiries, onView, onEdit, onDelete }) {
   }
 
   return (
-    <table className="mt-6 w-full text-left text-sm text-slate-300">
-      <thead className="border-b border-slate-800 text-xs uppercase text-slate-500">
+    // min-w ensures narrow viewports get a real horizontal scroll (via the overflow-x-auto
+    // wrapper in InquiriesPage) instead of columns getting crushed illegible.
+    <table className="mt-6 w-full min-w-[640px] text-left text-sm text-slate-300">
+      <thead className="border-b border-slate-800 font-label text-xs uppercase tracking-wide text-slate-500">
         <tr>
           <th className="py-2 pr-4">Customer</th>
           <th className="py-2 pr-4">Project Type</th>

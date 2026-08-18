@@ -3,6 +3,8 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import InspectionForm from '../components/InspectionForm';
 import InspectionRescheduleModal from '../components/InspectionRescheduleModal';
 import InspectionTable from '../components/InspectionTable';
+import Spinner from '../components/Spinner';
+import { useToast } from '../context/ToastContext';
 import { extractErrorMessage } from '../services/api';
 import { listInquiries } from '../services/inquiries';
 import { deleteInspection, INSPECTION_STATUSES, listInspections, updateInspection } from '../services/inspections';
@@ -10,6 +12,7 @@ import { deleteInspection, INSPECTION_STATUSES, listInspections, updateInspectio
 const PAGE_SIZE = 20;
 
 export default function InspectionsPage() {
+  const { showToast } = useToast();
   const [status, setStatus] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
@@ -73,12 +76,14 @@ export default function InspectionsPage() {
   }
 
   async function handleMarkComplete(inspection) {
-    setError('');
     try {
       await updateInspection(inspection.id, { status: 'COMPLETED' });
+      showToast('Inspection marked complete');
       await refetch();
     } catch (err) {
-      setError(extractErrorMessage(err));
+      // Toast, not the page-level `error` banner - the list itself is still valid, only
+      // this one action failed. Same reasoning as delete below and InquiriesPage's delete.
+      showToast(extractErrorMessage(err), 'error');
     }
   }
 
@@ -87,9 +92,10 @@ export default function InspectionsPage() {
     try {
       await deleteInspection(deletingInspection.id);
       setDeletingInspection(null);
+      showToast('Inspection deleted');
       await refetch();
     } catch (err) {
-      setError(extractErrorMessage(err));
+      showToast(extractErrorMessage(err), 'error');
       setDeletingInspection(null);
     } finally {
       setDeleting(false);
@@ -100,11 +106,11 @@ export default function InspectionsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-white">Inspections</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl tracking-wide text-white">Inspections</h1>
         <button
           onClick={() => setFormState({ mode: 'create' })}
-          className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500"
+          className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-500"
         >
           New Inspection
         </button>
@@ -164,22 +170,27 @@ export default function InspectionsPage() {
       )}
 
       {loading ? (
-        <p className="mt-6 text-slate-400">Loading…</p>
+        <div className="mt-6 flex items-center gap-2 text-slate-400">
+          <Spinner size="sm" />
+          <span>Loading…</span>
+        </div>
       ) : error && inspections.length === 0 ? null : (
         // Same empty-vs-error guard as InquiriesPage (Phase 2): only suppress the table
         // when there's truly nothing to show, so a Mark Complete/Delete failure keeps
         // showing existing rows instead of blanking the screen.
         <>
-          <InspectionTable
-            inspections={inspections}
-            inquiryNames={inquiryNames}
-            onEdit={(inspection) => setFormState({ mode: 'edit', inspection })}
-            onReschedule={setReschedulingInspection}
-            onMarkComplete={handleMarkComplete}
-            onDelete={setDeletingInspection}
-          />
+          <div className="overflow-x-auto">
+            <InspectionTable
+              inspections={inspections}
+              inquiryNames={inquiryNames}
+              onEdit={(inspection) => setFormState({ mode: 'edit', inspection })}
+              onReschedule={setReschedulingInspection}
+              onMarkComplete={handleMarkComplete}
+              onDelete={setDeletingInspection}
+            />
+          </div>
 
-          <div className="mt-4 flex items-center justify-between text-sm text-slate-400">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-400">
             <span>{total} total</span>
             <div className="flex items-center gap-3">
               <button
@@ -210,7 +221,9 @@ export default function InspectionsPage() {
           inspection={formState.inspection}
           onClose={() => setFormState(null)}
           onSaved={() => {
+            const wasEdit = formState.mode === 'edit';
             setFormState(null);
+            showToast(wasEdit ? 'Inspection updated' : 'Inspection created');
             refetch();
           }}
         />
@@ -222,6 +235,7 @@ export default function InspectionsPage() {
           onClose={() => setReschedulingInspection(null)}
           onSaved={() => {
             setReschedulingInspection(null);
+            showToast('Inspection rescheduled');
             refetch();
           }}
         />

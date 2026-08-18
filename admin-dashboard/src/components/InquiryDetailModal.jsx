@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
+import Spinner from './Spinner';
 import { extractErrorMessage } from '../services/api';
 import { listInspectionsForInquiry } from '../services/inspections';
 

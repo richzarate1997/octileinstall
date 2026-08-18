@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Mirrors css/styles.css's base rules: body copy in Barlow, headings in Bebas Neue with
+   the same letter-spacing. Applied globally here rather than per-element so every existing
+   <h1>/<p> across the dashboard picks it up without a font-* className on each one.
+   Scoped to h1/h2 only, not h3/h4 like the main site - unlike the marketing site, this
+   app's h3/h4 are small in-modal sub-labels ("Message", "Notes"), not large section
+   headings, and Bebas Neue's bold condensed all-caps style doesn't stay legible that small. */
+@layer base {
+  body {
+    @apply font-body;
+  }
+
+  h1, h2 {
+    @apply font-display tracking-wide;
+  }
+
+  /* --font-label is documented in css/styles.css as "nav/buttons/labels/eyebrows" - applied
+     to every <button> here rather than hand-added per button across a dozen files. Inputs/
+     selects/textareas are left on font-body: the main site's own reset only inherits body
+     font for form controls, reserving the condensed label font for nav/button/label text. */
+  button {
+    @apply font-label tracking-wide;
+  }
+}
+

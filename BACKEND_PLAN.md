@@ -693,9 +693,9 @@ Frontend — **Sonnet 5** (no switch):
 - [x] 2.3 Inquiry form (create/edit)
 - [x] 3.1 Inspections page
 - [x] 3.2 Inspection form (create/edit/reschedule)
-- [ ] 4.1 Tailwind styling
-- [ ] 4.2 Responsive design
-- [ ] 4.3 Toast notifications & confirmations
+- [x] 4.1 Tailwind styling
+- [x] 4.2 Responsive design
+- [x] 4.3 Toast notifications & confirmations
 
 Frontend Phase 1 landed. Notes for whoever picks up Phase 2, since it builds directly on
 top of this:
@@ -827,6 +827,65 @@ delete confirmation). Notes for whoever picks up Phase 4:
   into one correctly-shaped request URL. Not interactively tested: Edit/Reschedule/Mark
   Complete/Delete row actions, since no backend means no rows exist to click — same
   limitation as Phase 2, same reasoning (these reuse already-verified patterns).
+
+Frontend Phase 4 landed (Tailwind brand styling, sidebar navigation, responsive layout,
+loading spinners, toast notifications). This is the last frontend phase in the plan —
+the admin dashboard build is now complete end to end. Notes for anyone touching styling
+or layout later:
+
+- **The dashboard's colors/fonts/radius are the main site's real design tokens, not a
+  generic dark theme.** Pulled directly from `css/styles.css`'s `:root` block: navy
+  `#0a0e1a`/`#111827`/`#1c2535`, blue `#1a6fd4`/`#3d9bff`, grey `#8a9ab5`, a near-flat 2px
+  border radius, and the same three Google Fonts (Bebas Neue / Barlow / Barlow Condensed)
+  at the same weights. Implemented in `tailwind.config.js` by **overriding the values of
+  Tailwind's existing `slate`/`blue` shade keys** (950/900/800/700/500/400/300 and
+  600/500/400 respectively) rather than adding new color names — every `bg-slate-950`,
+  `text-slate-400`, `bg-blue-600`, etc. already written across every component
+  automatically became brand-correct with zero component-file edits. If a shade not
+  currently in that override map gets used later (e.g. `slate-600` or `blue-300`), it
+  will silently fall back to Tailwind's stock gray/blue instead of the brand palette —
+  add it to the map in `tailwind.config.js` rather than hand-picking a hex value inline.
+- **Fonts are applied globally via `index.css`'s `@layer base`**, not per-element
+  classNames: `body` → Barlow, `h1`/`h2` → Bebas Neue, every `<button>` → Barlow
+  Condensed (matching that font's own documented purpose in `css/styles.css` as "nav/
+  buttons/labels/eyebrows"). Deliberately **not** applied to `h3`/`h4` — unlike the
+  marketing site, this app's `h3`/`h4` are small in-modal sub-labels ("Message", "Notes"),
+  and Bebas Neue's bold condensed all-caps style stops being legible that small.
+- **The nav is a real sidebar now** (`components/Layout.jsx`), not Phase 2's placeholder
+  top bar: persistent 256px sidebar at `lg:` (1024px) and up, a top bar + slide-down
+  drawer below that. The breakpoint is deliberately `lg`, not `md` — a 768px-wide
+  *portrait* tablet gets the mobile hamburger pattern (verified usable at that width),
+  not a cramped persistent sidebar; landscape tablets and up get the full sidebar.
+- **Toasts are scoped to action *outcomes* only** (`context/ToastContext.jsx`,
+  `useToast()`) — create/update/delete/reschedule/mark-complete success, plus delete and
+  mark-complete failure (both migrated off the page-level `error` banner they used before
+  this phase, since those are one-action failures, not "the page is broken"). They
+  deliberately do **not** replace: the persistent inline banner a full list/dashboard
+  load failure uses (an ephemeral toast is wrong for "here's why this page is empty"),
+  or inline form-validation errors inside modals (the user is already looking at the
+  form; a floating duplicate would be noise). If a new page/action is added later, follow
+  this same split rather than defaulting everything to toasts.
+- **Tables get horizontal scroll on narrow viewports, not a card-layout transform** —
+  `InquiryTable`/`InspectionTable` are wrapped in `overflow-x-auto` with an explicit
+  `min-w-[640px]`/`min-w-[720px]` on the `<table>`, so mobile gets a real, usable
+  horizontal scroll instead of illegibly crushed columns. A full responsive
+  table→card transform was considered and skipped as disproportionate to what "usable on
+  mobile" requires; revisit if the tables grow enough columns that horizontal scroll
+  itself becomes the UX problem.
+- **Verified live in a real browser**, more rigorously than prior phases since this is
+  entirely CSS/layout work the missing backend doesn't block checking: read *computed*
+  styles via `getComputedStyle` to confirm exact hex/font/radius matches (not eyeballed
+  from a screenshot) — e.g. the active nav item resolved to `rgb(26, 111, 212)`, exactly
+  `#1a6fd4`. Checked real 375px (mobile), 768px (tablet), and 1280px (desktop) viewports.
+  Confirmed the sidebar/drawer toggle, a modal's field rendering, and the toast
+  container's visual styling. One tooling wrinkle hit and resolved: the `computer` tool's
+  click action hung repeatedly in this session with delayed/queued delivery (a click
+  landing seconds after being issued) — worked around via direct `MouseEvent` dispatch
+  through `javascript_tool`, which isn't subject to the same delay; the underlying
+  component logic was confirmed correct either way. Not verified: a toast fired through
+  real app state (create/delete succeeding) — no live backend to produce that success
+  response in this sandbox, so only the `ToastContainer` markup/CSS was directly checked,
+  not the state-management trigger path.
 
 ---
 

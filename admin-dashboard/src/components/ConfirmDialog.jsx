@@ -1,3 +1,5 @@
+import Spinner from './Spinner';
+
 export default function ConfirmDialog({ title, message, confirmLabel = 'Delete', onConfirm, onCancel, confirming = false }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
@@ -16,8 +18,9 @@ export default function ConfirmDialog({ title, message, confirmLabel = 'Delete',
             type="button"
             onClick={onConfirm}
             disabled={confirming}
-            className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
+            {confirming && <Spinner size="sm" />}
             {confirming ? 'Deleting…' : confirmLabel}
           </button>
         </div>
