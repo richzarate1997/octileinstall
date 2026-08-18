@@ -17,6 +17,9 @@ export default function Layout() {
           <NavLink to="/inquiries" className={navLinkClass}>
             Inquiries
           </NavLink>
+          <NavLink to="/inspections" className={navLinkClass}>
+            Inspections
+          </NavLink>
         </div>
         <div className="flex items-center gap-4 text-sm text-slate-400">
           <span>{user?.fullName}</span>

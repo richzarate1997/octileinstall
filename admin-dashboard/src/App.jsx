@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
 import DashboardPage from './pages/DashboardPage';
 import InquiriesPage from './pages/InquiriesPage';
+import InspectionsPage from './pages/InspectionsPage';
 import LoginPage from './pages/LoginPage';
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/inquiries" element={<InquiriesPage />} />
+          <Route path="/inspections" element={<InspectionsPage />} />
         </Route>
       </Route>
     </Routes>

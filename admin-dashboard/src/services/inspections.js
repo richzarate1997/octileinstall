@@ -25,3 +25,34 @@ export async function listInspectionsForInquiry(inquiryId) {
   const response = await api.get('/inspection', { params: { limit: 100, offset: 0 } });
   return response.data.data.filter((inspection) => inspection.inquiryId === inquiryId);
 }
+
+export async function getInspection(id) {
+  const response = await api.get(`/inspection/${id}`);
+  return response.data;
+}
+
+// POST /api/inspection requires a valid inquiryId (404 if it doesn't exist) and a
+// scheduledDate strictly in the future (400 otherwise) - both enforced server-side
+// (BACKEND_PLAN.md Phase 5 / InspectionService.create()). There is no way to edit
+// inquiryId or location after creation.
+export async function createInspection(payload) {
+  const response = await api.post('/inspection', payload);
+  return response.data;
+}
+
+// PUT /api/inspection/{id} only ever accepts { status, notes, scheduledDate }. Presence of
+// scheduledDate means "reschedule" and is validated as a future date; omitting it (e.g. a
+// status-only update marking a past inspection COMPLETED) skips that check entirely - see
+// InspectionService.update(). Callers must not pass anything else.
+export async function updateInspection(id, { status, notes, scheduledDate } = {}) {
+  const payload = {};
+  if (status !== undefined) payload.status = status;
+  if (notes !== undefined) payload.notes = notes;
+  if (scheduledDate !== undefined) payload.scheduledDate = scheduledDate;
+  const response = await api.put(`/inspection/${id}`, payload);
+  return response.data;
+}
+
+export async function deleteInspection(id) {
+  await api.delete(`/inspection/${id}`);
+}

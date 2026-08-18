@@ -691,8 +691,8 @@ Frontend — **Sonnet 5** (no switch):
 - [x] 2.1 Dashboard page
 - [x] 2.2 Inquiries page & table
 - [x] 2.3 Inquiry form (create/edit)
-- [ ] 3.1 Inspections page
-- [ ] 3.2 Inspection form (create/edit/reschedule)
+- [x] 3.1 Inspections page
+- [x] 3.2 Inspection form (create/edit/reschedule)
 - [ ] 4.1 Tailwind styling
 - [ ] 4.2 Responsive design
 - [ ] 4.3 Toast notifications & confirmations
@@ -784,6 +784,49 @@ up Phase 3, since Inspection management follows the exact same patterns:
   rows exist to click - these reuse the exact same modal/error-handling patterns already
   verified for Create, just with different field sets, confirmed by direct code review
   rather than a click-through.
+
+Frontend Phase 3 landed (Inspections page: table with color-coded status, status/date-range
+filters, pagination; create/edit form; a separate Reschedule action; Mark Complete;
+delete confirmation). Notes for whoever picks up Phase 4:
+
+- **Reschedule is a deliberately separate, minimal modal from Edit**, even though both
+  end up calling the identical `PUT /api/inspection/{id}` — the backend draws no
+  distinction between "reschedule" and "general edit" (`InspectionUpdateRequest` bundles
+  status/notes/scheduledDate together), but the plan lists them as two distinct row
+  actions, and "I need to move this appointment" vs. "I want to edit this record" are
+  different user intents worth different UI even when the underlying call is the same.
+  `InspectionRescheduleModal` is just a date/time field + Save; `InspectionForm`'s edit
+  mode has all three fields together.
+- **Mark Complete is a genuine one-click action** (`updateInspection(id, {status:
+  'COMPLETED'})`, no modal) — hidden once an inspection is already COMPLETED, matching
+  Phase 2's per-row conditional-action pattern.
+- **The "linked inquiry" column shows a customer name, not a bare id** — `InspectionDTO`
+  only returns `inquiryId`. `InspectionsPage` fetches inquiries (`limit=100`, same scale
+  assumption as Phase 2's `listInspectionsForInquiry()`) alongside inspections and builds
+  an id→name lookup map, falling back to `Inquiry #N` if a mapping is missing (e.g. a
+  deleted inquiry an inspection still references).
+- **The create form's inquiry picker is a `<select>` of up to 100 existing inquiries**
+  (`inquiry.customerName — inquiry.projectType (inquiry.status)`), not a raw id input —
+  `POST /api/inspection` requires a valid `inquiryId` and 404s otherwise, so picking from
+  real records avoids that entirely. Save is disabled if no inquiry can be selected
+  (e.g. the picker's own fetch failed, or there are zero inquiries yet) — confirmed live.
+- **Considered but not built**: a "Schedule Inspection" button inside
+  `InquiryDetailModal` (Phase 2), pre-filling the inquiry so users don't have to search
+  for it in the standalone picker. Would reuse `InspectionForm` via an optional
+  `initialInquiryId` prop — small, but it means touching a Phase 2 file for a Phase 3
+  feature not explicitly asked for, so it was left as a flagged possible enhancement
+  rather than built silently.
+- **`utils/datetime.js`'s `toLocalInputValue()`** converts an ISO datetime to the
+  `YYYY-MM-DDTHH:mm` shape `<input type="datetime-local">` requires — shared by both
+  `InspectionForm` (edit mode) and `InspectionRescheduleModal`. Verified directly
+  (zero-padding, midnight) rather than assumed correct.
+- **Verified live against a real (backend-less) browser session**: confirmed the
+  Inspections nav link and page render correctly; confirmed the inquiry-picker's error
+  state renders an alert instead of a broken/empty dropdown when its own fetch fails, and
+  that Save is correctly disabled in that state; confirmed status+from+to filters combine
+  into one correctly-shaped request URL. Not interactively tested: Edit/Reschedule/Mark
+  Complete/Delete row actions, since no backend means no rows exist to click — same
+  limitation as Phase 2, same reasoning (these reuse already-verified patterns).
 
 ---
 
