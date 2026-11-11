@@ -1,20 +1,44 @@
 {
   "info": {
     "name": "OctileInstall Backend",
-    "description": "Manual test collection for the OctileInstall admin API (BACKEND_PLAN.md Phase 6). Run \"Auth > Login\" first - it captures the JWT into the {{token}} collection variable, which every other request uses automatically. \"Inquiries > Create Inquiry\" and \"Inspections > Create Inspection\" similarly capture {{inquiryId}} / {{inspectionId}} for the requests below them.\n\nSet {{baseUrl}} to your running instance (default: http://localhost:8081) and {{loginEmail}} / {{loginPassword}} to a real admin account before running Login - see backend/src/main/java/com/octileinstall/config/DataSeeder.java for how the first admin account gets created.",
+    "description": "Manual test collection for the OctileInstall admin API (BACKEND_PLAN.md Phase 6). Run \"Auth > Login\" first - it captures the JWT into the {{token}} collection variable, which every other request uses automatically. \"Inquiries > Create Inquiry\" and \"Inspections > Create Inspection\" similarly capture {{inquiryId}} / {{inspectionId}} for the requests below them.\n\nThe \"Public\" folder needs no auth at all - POST /api/public/inquiry is the one unauthenticated write endpoint in the API, reachable directly from the site's quote form.\n\nSet {{baseUrl}} to your running instance (default: http://localhost:8081) and {{loginEmail}} / {{loginPassword}} to a real admin account before running Login - see backend/src/main/java/com/octileinstall/config/DataSeeder.java for how the first admin account gets created.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:8081" },
-    { "key": "loginEmail", "value": "alberto@octileinstall.com" },
-    { "key": "loginPassword", "value": "" },
-    { "key": "token", "value": "" },
-    { "key": "inquiryId", "value": "" },
-    { "key": "inspectionId", "value": "" }
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081"
+    },
+    {
+      "key": "loginEmail",
+      "value": "alberto@octileinstall.com"
+    },
+    {
+      "key": "loginPassword",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "inquiryId",
+      "value": ""
+    },
+    {
+      "key": "inspectionId",
+      "value": ""
+    }
   ],
   "auth": {
     "type": "bearer",
-    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
   },
   "item": [
     {
@@ -24,13 +48,30 @@
           "name": "Login",
           "request": {
             "method": "POST",
-            "auth": { "type": "noauth" },
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{loginEmail}}\",\n  \"password\": \"{{loginPassword}}\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
             "description": "Happy path: 200 with a JWT. The test script below stores it in {{token}} so every other request in this collection is authenticated automatically."
           },
           "event": [
@@ -53,13 +94,30 @@
           "name": "Login - wrong password (401)",
           "request": {
             "method": "POST",
-            "auth": { "type": "noauth" },
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{loginEmail}}\",\n  \"password\": \"definitely-not-the-password\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
             "description": "Error path: 401 with the standard {status, error, message} shape, and the message never reveals whether the account exists."
           },
           "event": [
@@ -80,7 +138,17 @@
           "name": "Get Current User (/me)",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            },
             "description": "Proves the JWT is accepted and the SecurityContext is populated - returns the caller's own identity."
           }
         },
@@ -88,8 +156,20 @@
           "name": "Get Current User - no token (401)",
           "request": {
             "method": "GET",
-            "auth": { "type": "noauth" },
-            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] },
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            },
             "description": "Error path: every /api route except /api/auth/login requires a bearer token."
           },
           "event": [
@@ -114,8 +194,23 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/inquiry?limit=20&offset=0",
-              "host": ["{{baseUrl}}"], "path": ["api", "inquiry"],
-              "query": [{ "key": "limit", "value": "20" }, { "key": "offset", "value": "0" }]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inquiry"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
             },
             "description": "Sorted by created_at DESC. Response shape: { data: [...], total: N }."
           }
@@ -126,8 +221,19 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/inquiry?status=NEW",
-              "host": ["{{baseUrl}}"], "path": ["api", "inquiry"],
-              "query": [{ "key": "status", "value": "NEW" }]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inquiry"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "NEW"
+                }
+              ]
             }
           }
         },
@@ -135,12 +241,26 @@
           "name": "Create Inquiry",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"customerName\": \"John Doe\",\n  \"customerEmail\": \"john@example.com\",\n  \"customerPhone\": \"(714) 555-1234\",\n  \"projectType\": \"Custom Shower\",\n  \"city\": \"Irvine\",\n  \"message\": \"Looking for a custom shower design.\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/api/inquiry", "host": ["{{baseUrl}}"], "path": ["api", "inquiry"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/inquiry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inquiry"
+              ]
+            },
             "description": "201 Created. projectType accepts the human-readable label (\"Custom Shower\"), matching the public site's quote form - not the CUSTOM_SHOWER enum constant name."
           },
           "event": [
@@ -163,9 +283,26 @@
           "name": "Create Inquiry - missing required fields (400)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"customerName\": \"\",\n  \"customerEmail\": \"\"\n}" },
-            "url": { "raw": "{{baseUrl}}/api/inquiry", "host": ["{{baseUrl}}"], "path": ["api", "inquiry"] },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"\",\n  \"customerEmail\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/inquiry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inquiry"
+              ]
+            },
             "description": "Error path: 400 with a fieldErrors map naming each invalid field."
           },
           "event": [
@@ -186,7 +323,17 @@
           "name": "Get Inquiry by Id",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/api/inquiry/{{inquiryId}}", "host": ["{{baseUrl}}"], "path": ["api", "inquiry", "{{inquiryId}}"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/inquiry/{{inquiryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inquiry",
+                "{{inquiryId}}"
+              ]
+            },
             "description": "Run \"Create Inquiry\" first so {{inquiryId}} is populated."
           }
         },
@@ -194,7 +341,17 @@
           "name": "Get Inquiry by Id - not found (404)",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/api/inquiry/999999", "host": ["{{baseUrl}}"], "path": ["api", "inquiry", "999999"] }
+            "url": {
+              "raw": "{{baseUrl}}/api/inquiry/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inquiry",
+                "999999"
+              ]
+            }
           },
           "event": [
             {
@@ -211,12 +368,27 @@
           "name": "Update Inquiry (status + notes)",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"CONTACTED\",\n  \"notes\": \"Called customer, scheduled site visit for next week.\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/api/inquiry/{{inquiryId}}", "host": ["{{baseUrl}}"], "path": ["api", "inquiry", "{{inquiryId}}"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/inquiry/{{inquiryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inquiry",
+                "{{inquiryId}}"
+              ]
+            },
             "description": "Partial update - only the fields present in the body are changed."
           }
         },
@@ -224,7 +396,17 @@
           "name": "Delete Inquiry",
           "request": {
             "method": "DELETE",
-            "url": { "raw": "{{baseUrl}}/api/inquiry/{{inquiryId}}", "host": ["{{baseUrl}}"], "path": ["api", "inquiry", "{{inquiryId}}"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/inquiry/{{inquiryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inquiry",
+                "{{inquiryId}}"
+              ]
+            },
             "description": "204 No Content. Run this last - it removes the inquiry {{inquiryId}} points at."
           },
           "event": [
@@ -247,7 +429,16 @@
           "name": "List Inspections",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/api/inspection", "host": ["{{baseUrl}}"], "path": ["api", "inspection"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/inspection",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inspection"
+              ]
+            },
             "description": "Sorted by scheduled_date ASC."
           }
         },
@@ -257,11 +448,26 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/inspection?from=2027-01-01&to=2027-12-31&status=SCHEDULED",
-              "host": ["{{baseUrl}}"], "path": ["api", "inspection"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inspection"
+              ],
               "query": [
-                { "key": "from", "value": "2027-01-01" },
-                { "key": "to", "value": "2027-12-31" },
-                { "key": "status", "value": "SCHEDULED" }
+                {
+                  "key": "from",
+                  "value": "2027-01-01"
+                },
+                {
+                  "key": "to",
+                  "value": "2027-12-31"
+                },
+                {
+                  "key": "status",
+                  "value": "SCHEDULED"
+                }
               ]
             }
           }
@@ -270,13 +476,27 @@
           "name": "Create Inspection",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"inquiryId\": {{inquiryId}},\n  \"scheduledDate\": \"2027-06-10T14:00:00\",\n  \"location\": \"123 Main St, Irvine, CA 92614\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/api/inspection", "host": ["{{baseUrl}}"], "path": ["api", "inspection"] },
-            "description": "Run \"Inquiries > Create Inquiry\" first so {{inquiryId}} points at a real inquiry. scheduledDate must be in the future - a single ISO-8601 datetime (see BACKEND_PLAN.md §9 on why there's no separate time field)."
+            "url": {
+              "raw": "{{baseUrl}}/api/inspection",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inspection"
+              ]
+            },
+            "description": "Run \"Inquiries > Create Inquiry\" first so {{inquiryId}} points at a real inquiry. scheduledDate must be in the future - a single ISO-8601 datetime (see BACKEND_PLAN.md \u00a79 on why there's no separate time field)."
           },
           "event": [
             {
@@ -298,12 +518,26 @@
           "name": "Create Inspection - unknown inquiry (404)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"inquiryId\": 999999,\n  \"scheduledDate\": \"2027-06-10T14:00:00\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/api/inspection", "host": ["{{baseUrl}}"], "path": ["api", "inspection"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/inspection",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inspection"
+              ]
+            },
             "description": "Error path named explicitly in BACKEND_PLAN.md's Phase 5 acceptance criteria."
           },
           "event": [
@@ -321,12 +555,26 @@
           "name": "Create Inspection - past date (400)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"inquiryId\": {{inquiryId}},\n  \"scheduledDate\": \"2020-01-01T09:00:00\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/api/inspection", "host": ["{{baseUrl}}"], "path": ["api", "inspection"] }
+            "url": {
+              "raw": "{{baseUrl}}/api/inspection",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inspection"
+              ]
+            }
           },
           "event": [
             {
@@ -343,16 +591,44 @@
           "name": "Get Inspection by Id",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}", "host": ["{{baseUrl}}"], "path": ["api", "inspection", "{{inspectionId}}"] }
+            "url": {
+              "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inspection",
+                "{{inspectionId}}"
+              ]
+            }
           }
         },
         {
           "name": "Update Inspection (reschedule)",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"scheduledDate\": \"2027-07-01T09:00:00\"\n}" },
-            "url": { "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}", "host": ["{{baseUrl}}"], "path": ["api", "inspection", "{{inspectionId}}"] },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scheduledDate\": \"2027-07-01T09:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inspection",
+                "{{inspectionId}}"
+              ]
+            },
             "description": "Rescheduling is also validated as a future date."
           }
         },
@@ -360,12 +636,27 @@
           "name": "Update Inspection (mark completed)",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"COMPLETED\",\n  \"notes\": \"Inspection completed. Design finalized with customer.\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}", "host": ["{{baseUrl}}"], "path": ["api", "inspection", "{{inspectionId}}"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inspection",
+                "{{inspectionId}}"
+              ]
+            },
             "description": "Status-only updates are never blocked by the future-date check, even once the inspection's date has passed - that's the normal way a completed inspection gets closed out."
           }
         },
@@ -373,7 +664,17 @@
           "name": "Delete Inspection",
           "request": {
             "method": "DELETE",
-            "url": { "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}", "host": ["{{baseUrl}}"], "path": ["api", "inspection", "{{inspectionId}}"] },
+            "url": {
+              "raw": "{{baseUrl}}/api/inspection/{{inspectionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inspection",
+                "{{inspectionId}}"
+              ]
+            },
             "description": "204 No Content. Run this last."
           },
           "event": [
@@ -382,6 +683,144 @@
               "script": {
                 "exec": [
                   "pm.test('Delete returns 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Submit Public Inquiry",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Jane Public\",\n  \"customerEmail\": \"jane@example.com\",\n  \"customerPhone\": \"(714) 555-9876\",\n  \"projectType\": \"Custom Shower\",\n  \"city\": \"Anaheim\",\n  \"message\": \"Interested in a walk-in shower.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/public/inquiry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "public",
+                "inquiry"
+              ]
+            },
+            "description": "No token required - this is the only unauthenticated write endpoint in the API (see SecurityConfig / PublicInquiryController). The response is a minimal ack, not the created inquiry - check the admin dashboard's Inquiries page (or GET /api/inquiry as an admin) to see it land with status NEW and no createdBy. Rate-limited per IP (default 5 / 15 min, see app.public-inquiry.rate-limit.*)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Public submission returns 201 with an ack', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var body = pm.response.json();",
+                  "    pm.expect(body.received).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Submit Public Inquiry - missing required fields (400)",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/public/inquiry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "public",
+                "inquiry"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Missing customerName/customerEmail returns 400 with fieldErrors', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "    var body = pm.response.json();",
+                  "    pm.expect(body.fieldErrors).to.have.property('customerName');",
+                  "    pm.expect(body.fieldErrors).to.have.property('customerEmail');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Submit Public Inquiry - honeypot filled (silently dropped)",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Bot Name\",\n  \"customerEmail\": \"bot@example.com\",\n  \"company\": \"Definitely A Real Company\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/public/inquiry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "public",
+                "inquiry"
+              ]
+            },
+            "description": "The company field is the honeypot - a real visitor never fills it in. This still returns 201 like a genuine submission (see PublicInquiryController's class javadoc for why), but check GET /api/inquiry as an admin afterward and confirm no new row was actually created."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Honeypot hit still returns 201 (indistinguishable from a real submission)', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
                 ]
               }
             }

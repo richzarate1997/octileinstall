@@ -53,6 +53,11 @@ public class GlobalExceptionHandler {
         return error(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
+    @ExceptionHandler(TooManyRequestsException.class)
+    public ResponseEntity<Map<String, Object>> handleTooManyRequests(TooManyRequestsException e) {
+        return error(HttpStatus.TOO_MANY_REQUESTS, e.getMessage());
+    }
+
     /** @Valid failures on request DTOs (e.g. blank customerName, invalid email). */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleBeanValidation(MethodArgumentNotValidException e) {

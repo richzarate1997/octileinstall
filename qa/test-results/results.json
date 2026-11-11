@@ -1,0 +1,168 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\Richard Admin\\Repositories\\octileinstall\\qa\\playwright.config.js",
+    "rootDir": "C:/Users/Richard Admin/Repositories/octileinstall/qa/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/Richard Admin/Repositories/octileinstall/qa/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "id": "public-site-desktop",
+        "name": "public-site-desktop",
+        "testDir": "C:/Users/Richard Admin/Repositories/octileinstall/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "/public-site.*\\.spec\\.js/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Richard Admin/Repositories/octileinstall/qa/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "id": "public-site-mobile",
+        "name": "public-site-mobile",
+        "testDir": "C:/Users/Richard Admin/Repositories/octileinstall/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "/public-site.*\\.spec\\.js/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Richard Admin/Repositories/octileinstall/qa/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "id": "admin-desktop",
+        "name": "admin-desktop",
+        "testDir": "C:/Users/Richard Admin/Repositories/octileinstall/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "/admin.*\\.spec\\.js/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Richard Admin/Repositories/octileinstall/qa/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "id": "admin-mobile",
+        "name": "admin-mobile",
+        "testDir": "C:/Users/Richard Admin/Repositories/octileinstall/qa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "/admin.*\\.spec\\.js/"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.40.1",
+    "workers": 4,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "public-site.spec.js",
+      "file": "public-site.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Public customer site (TC-C)",
+          "file": "public-site.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TC-C18 Footer copyright year renders 2026",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "public-site-desktop",
+                  "projectName": "public-site-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "failed",
+                      "duration": 202,
+                      "error": {
+                        "message": "Error: browserType.launch: Target page, context or browser has been closed\nBrowser logs:\n\n<launching> C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe --disable-field-trial-config --disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,MediaRouter,DialMediaRouteProvider,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,HttpsUpgrades --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\\Users\\RICHAR~1\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-yud64F --remote-debugging-pipe --no-startup-window\n<launched> pid=30632\nCall log:\n  \u001b[2m- <launching> C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe --disable-field-trial-config --disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,MediaRouter,DialMediaRouteProvider,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,HttpsUpgrades --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\\Users\\RICHAR~1\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-yud64F --remote-debugging-pipe --no-startup-window\u001b[22m\n\u001b[2m  - <launched> pid=30632\u001b[22m\n",
+                        "stack": "Error: browserType.launch: Target page, context or browser has been closed\nBrowser logs:\n\n<launching> C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe --disable-field-trial-config --disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,MediaRouter,DialMediaRouteProvider,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,HttpsUpgrades --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\\Users\\RICHAR~1\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-yud64F --remote-debugging-pipe --no-startup-window\n<launched> pid=30632\nCall log:\n  \u001b[2m- <launching> C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe --disable-field-trial-config --disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,MediaRouter,DialMediaRouteProvider,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,HttpsUpgrades --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\\Users\\RICHAR~1\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-yud64F --remote-debugging-pipe --no-startup-window\u001b[22m\n\u001b[2m  - <launched> pid=30632\u001b[22m\n\n"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Target page, context or browser has been closed\nBrowser logs:\n\n<launching> C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe --disable-field-trial-config --disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,MediaRouter,DialMediaRouteProvider,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,HttpsUpgrades --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\\Users\\RICHAR~1\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-yud64F --remote-debugging-pipe --no-startup-window\n<launched> pid=30632\nCall log:\n  \u001b[2m- <launching> C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe --disable-field-trial-config --disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,MediaRouter,DialMediaRouteProvider,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,HttpsUpgrades --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\\Users\\RICHAR~1\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-yud64F --remote-debugging-pipe --no-startup-window\u001b[22m\n\u001b[2m  - <launched> pid=30632\u001b[22m\n\n\n\n"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-14T00:10:45.330Z",
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\Richard Admin\\Repositories\\octileinstall\\qa\\test-results\\public-site-Public-customer-site-TC-C-TC-C18-Footer-copyright-year-renders-2026-public-site-desktop\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "9f8d83ea487fad415531-b65306ce5e9ec6216dfc",
+              "file": "public-site.spec.js",
+              "line": 117,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-14T00:10:42.161Z",
+    "duration": 11200.965,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

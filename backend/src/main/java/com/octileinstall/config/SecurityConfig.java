@@ -60,6 +60,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
+                        // The public quote form (index.html) submits here with no token - see
+                        // PublicInquiryController. POST only: there is no public read access
+                        // to inquiries, just this one write path, and it carries its own
+                        // rate limiting and honeypot check since anyone can reach it.
+                        .requestMatchers(HttpMethod.POST, "/api/public/inquiry").permitAll()
                         // Default-deny: anything not listed above needs a valid token.
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex

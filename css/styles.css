@@ -924,49 +924,11 @@ section {
   .calculator-form .form-submit { grid-column: span 1; }
 }
 
-/* ===== Quote form ===== */
-.quote-form {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  max-width: 900px;
-}
-
-.quote-form .form-row--full { grid-column: span 2; }
-
-.quote-form textarea { resize: vertical; }
-
-.form-row--honeypot {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
-.quote-form .field-error {
-  color: #ff6b6b;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-top: 4px;
-}
-
-.quote-form .form-submit { grid-column: span 2; }
-
-.quote-form-message {
-  margin-top: 16px;
-  font-family: var(--font-label);
-  letter-spacing: 1px;
-  font-weight: 600;
-  min-height: 1.2em;
-}
-.quote-form-message.is-success { color: var(--color-primary-light); }
-.quote-form-message.is-error { color: #ff6b6b; }
-
-@media (max-width: 480px) {
-  .quote-form { grid-template-columns: 1fr; }
-  .quote-form .form-row--full,
-  .quote-form .form-submit { grid-column: span 1; }
+/* ===== Quote CTA (call/text - no form; see #quote in index.html) ===== */
+.quote-cta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 /* ===== Footer ===== */

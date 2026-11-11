@@ -942,3 +942,81 @@ Rough timeline: 2-3 weeks part-time, 1 week full-time
 
 **Ask questions when stuck** — don't guess on security (auth, password hashing, CORS)
 
+
+---
+
+## 10. Post-launch addendum: public site scoped to informative-only Phase 1 (2026-08-18)
+
+Added after all 10 original phases were complete. This went through two revisions in one
+day, in response to a gap found while writing `TEST_PLAN.md` and then a deliberate scope
+cut - both are recorded here so the "why" isn't lost:
+
+1. The public site's quote form originally posted to a placeholder Formspree endpoint
+   (`FORM_ID` was never replaced with a real one), so every real customer inquiry was
+   silently lost.
+2. A fix was built: first an unauthenticated backend endpoint the form posted JSON to
+   directly, then (after feedback) scaled back to just finishing the original Formspree
+   wiring, keeping the backend endpoint as a separate, disconnected "Phase 2."
+3. **Final decision: cut the form entirely for Phase 1.** The public site is
+   **informative-only** - no quote form, no email step, no lead-capture mechanism of any
+   kind. A customer reaches Alberto by calling, texting, or DMing Instagram directly, via
+   plain links. This is intentionally the simplest possible Phase 1: zero moving parts,
+   nothing that can silently break, no third-party account (Formspree) required to launch.
+
+### Phase 1 (live now) - what changed
+- `index.html` - the `#quote` section no longer contains a `<form>`. It's a static panel
+  with two buttons: a `tel:+17146243132` link and an `https://instagram.com/octileinstall`
+  link. The hero's primary CTA button now reads "Call or Text for a Free Quote" (still
+  anchors to `#quote`) instead of implying something gets "sent."
+- `js/main.js` - the entire quote-form IIFE (validation, honeypot handling, fetch/submit
+  logic) was deleted. The file now only handles the mobile nav, hero mosaic, scroll-reveal,
+  footer year, and gallery lightbox - all unrelated to any form.
+- `css/styles.css` - the `.quote-form`, `.form-row--honeypot`, `.quote-form-message`, and
+  related rules (dead code once the `<form>` was removed) were replaced with one small
+  `.quote-cta` rule for the two-button panel.
+- Net effect: the public site has **no client-side JS dependency and no third-party
+  dependency** for its primary call-to-action. It cannot "go dead" the way the Formspree
+  placeholder did, because there's nothing left to misconfigure.
+
+### Phase 2 (built, tested, not connected - unchanged from before)
+Everything below still exists in `backend/`, still passes its test suite, and is still
+completely unreferenced by the public site. Nothing in this revision touched it:
+- `POST /api/public/inquiry` (`PublicInquiryController`) - the only unauthenticated write
+  endpoint in the API. `SecurityConfig` permits this one path/method explicitly; everything
+  else is still default-deny.
+- `PublicInquiryCreateRequest` / `PublicInquiryResponse` - separate DTOs from the admin
+  `InquiryCreateRequest`/`InquiryDTO`. The request carries `@Size` caps the admin form has no
+  need for (an anonymous caller is a different threat model than a staff member), and a
+  `company` honeypot field. The response is a minimal `{received, message}` ack - never the
+  row id, status, or timestamps - and is byte-for-byte identical whether the submission was
+  real or silently dropped as a honeypot hit, so a bot probing the endpoint can't distinguish
+  detection from acceptance.
+- `RateLimiterService` - a simple in-memory, per-IP, fixed-window limiter (default: 5
+  requests / 15 minutes, tunable via `app.public-inquiry.rate-limit.*`). Single-instance only
+  by design; see the class javadoc for what a multi-instance deployment would need instead.
+  Exceeding it throws the new `TooManyRequestsException`, mapped to 429 by
+  `GlobalExceptionHandler` like every other error here.
+- `InquiryService.createPublic(...)` - the unauthenticated counterpart to `create(...)`, with
+  `createdByUser` left null since there's no staff member to attribute the row to.
+- Full integration test coverage (`PublicInquiryControllerIntegrationTest`): success,
+  validation failures, honeypot drop, rate-limit exceeded, per-IP isolation. All passing as
+  of this writing (`mvn clean test`).
+- `app.cors.allowed-origins` in `application.properties` already lists the public site's
+  production domains, and `app.public-inquiry.rate-limit.*` is already tunable - both ready
+  for Phase 2 whenever it's connected.
+
+**To connect Phase 2 later:** decide on a lead-capture UI for the public site again (a form,
+or something else), point its submission at `<backend-origin>/api/public/inquiry` with a
+JSON body (`customerName`, `customerEmail`, `customerPhone`, `projectType`, `city`,
+`message`), and confirm the deployed backend origin is in `app.cors.allowed-origins`. The
+endpoint, DTOs, service method, rate limiter, and tests are already in place - this is UI
+work plus wiring, not new backend work.
+
+**Still open / deliberately out of scope for this change:**
+- No admin-side way to fix a mistyped phone/email, etc. - unrelated, pre-existing (see
+  `TEST_PLAN.md` defect #11).
+- Role enforcement (`TEST_PLAN.md` defect #2) and login rate limiting (defect #3) were not
+  touched - neither revision of this addendum concerns the authenticated-side findings.
+- `X-Forwarded-For` handling for the Phase 2 rate limiter was deliberately not added - see
+  `PublicInquiryController.clientIp()`'s javadoc. Needed only once this sits behind a proxy,
+  which is moot until Phase 2 is actually connected.

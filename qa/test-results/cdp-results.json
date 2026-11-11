@@ -1,0 +1,194 @@
+[
+  {
+    "id": "TC-E8",
+    "title": "Public site loads w/o console errors [desktop]",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "TC-C1",
+    "title": "Hero CTA href=#quote [desktop]",
+    "status": "PASS",
+    "detail": "#quote"
+  },
+  {
+    "id": "TC-C1a",
+    "title": "Quote call/text button [desktop]",
+    "status": "PASS",
+    "detail": "text=\"Call or Text (714) 624-3132\" href=tel:+17146243132"
+  },
+  {
+    "id": "TC-C1b",
+    "title": "Quote Instagram button [desktop]",
+    "status": "PASS",
+    "detail": "href=https://instagram.com/octileinstall target=_blank rel=noopener"
+  },
+  {
+    "id": "TC-C2",
+    "title": "No form/honeypot anywhere [desktop]",
+    "status": "PASS",
+    "detail": "forms=0 honeypot=0 qf=0"
+  },
+  {
+    "id": "TC-C9",
+    "title": "All tel: links identical (5x) [desktop]",
+    "status": "PASS",
+    "detail": "[\"tel:+17146243132\",\"tel:+17146243132\",\"tel:+17146243132\",\"tel:+17146243132\",\"tel:+17146243132\"]"
+  },
+  {
+    "id": "TC-C10",
+    "title": "Instagram links (4x) share target/rel [desktop]",
+    "status": "PASS",
+    "detail": "count=4"
+  },
+  {
+    "id": "TC-C12/13",
+    "title": "Lightbox opens w/ correct caption, closes via X/backdrop/Esc [desktop]",
+    "status": "PASS",
+    "detail": "caption=\"Custom tile installation\""
+  },
+  {
+    "id": "TC-C15",
+    "title": "All gallery/hero/logo images return 200 [desktop]",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "TC-C17",
+    "title": "Scroll-reveal gains .visible [desktop]",
+    "status": "PASS",
+    "detail": "services-grid reveal visible"
+  },
+  {
+    "id": "TC-C18",
+    "title": "Footer year renders 2026 [desktop]",
+    "status": "PASS",
+    "detail": "2026"
+  },
+  {
+    "id": "TC-C20",
+    "title": "Meta tags present (title/desc/canonical/og:image) [desktop]",
+    "status": "PASS",
+    "detail": "title=\"Custom Shower & Tile Installation Orange County | OC Tile Install Inc\" canonical=https://www.octileinstall.com/ ogImage=images/logo.jpg"
+  },
+  {
+    "id": "TC-E8",
+    "title": "Public site loads w/o console errors [mobile]",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "TC-C1",
+    "title": "Hero CTA href=#quote [mobile]",
+    "status": "PASS",
+    "detail": "#quote"
+  },
+  {
+    "id": "TC-C1a",
+    "title": "Quote call/text button [mobile]",
+    "status": "PASS",
+    "detail": "text=\"Call or Text (714) 624-3132\" href=tel:+17146243132"
+  },
+  {
+    "id": "TC-C1b",
+    "title": "Quote Instagram button [mobile]",
+    "status": "PASS",
+    "detail": "href=https://instagram.com/octileinstall target=_blank rel=noopener"
+  },
+  {
+    "id": "TC-C2",
+    "title": "No form/honeypot anywhere [mobile]",
+    "status": "PASS",
+    "detail": "forms=0 honeypot=0 qf=0"
+  },
+  {
+    "id": "TC-C9",
+    "title": "All tel: links identical (5x) [mobile]",
+    "status": "PASS",
+    "detail": "[\"tel:+17146243132\",\"tel:+17146243132\",\"tel:+17146243132\",\"tel:+17146243132\",\"tel:+17146243132\"]"
+  },
+  {
+    "id": "TC-C10",
+    "title": "Instagram links (4x) share target/rel [mobile]",
+    "status": "PASS",
+    "detail": "count=4"
+  },
+  {
+    "id": "TC-C11",
+    "title": "Mobile nav opens then closes on link click [mobile]",
+    "status": "PASS",
+    "detail": "before=navbar-nav afterOpen=navbar-nav is-open/true afterClose=navbar-nav/false"
+  },
+  {
+    "id": "TC-C12/13",
+    "title": "Lightbox opens w/ correct caption, closes via X/backdrop/Esc [mobile]",
+    "status": "PASS",
+    "detail": "caption=\"Custom tile installation\""
+  },
+  {
+    "id": "TC-C15",
+    "title": "All gallery/hero/logo images return 200 [mobile]",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "TC-C17",
+    "title": "Scroll-reveal gains .visible [mobile]",
+    "status": "PASS",
+    "detail": "services-grid reveal visible"
+  },
+  {
+    "id": "TC-C18",
+    "title": "Footer year renders 2026 [mobile]",
+    "status": "PASS",
+    "detail": "2026"
+  },
+  {
+    "id": "TC-C20",
+    "title": "Meta tags present (title/desc/canonical/og:image) [mobile]",
+    "status": "PASS",
+    "detail": "title=\"Custom Shower & Tile Installation Orange County | OC Tile Install Inc\" canonical=https://www.octileinstall.com/ ogImage=images/logo.jpg"
+  },
+  {
+    "id": "TC-E7",
+    "title": "Admin dashboard Vite dev server reachable",
+    "status": "PASS",
+    "detail": "status=200"
+  },
+  {
+    "id": "TC-A1",
+    "title": "Visit / logged out redirects to /login",
+    "status": "PASS",
+    "detail": "http://localhost:5177/login"
+  },
+  {
+    "id": "TC-A2(partial)",
+    "title": "Visit /inquiries logged out redirects to /login (from-preservation needs a working login - BLOCKED, see notes)",
+    "status": "PASS",
+    "detail": "http://localhost:5177/login"
+  },
+  {
+    "id": "TC-A5",
+    "title": "Empty login submit blocked by HTML5 validation, no request fires",
+    "status": "PASS",
+    "detail": "requestFired=false validationMessage=\"Please fill out this field.\""
+  },
+  {
+    "id": "TC-A7",
+    "title": "Login attempt with backend down shows friendly error, not blank page",
+    "status": "PASS",
+    "detail": "OC Tile Install — Admin\n\nSomething went wrong. Please try again.\n\nEmail\nPassword\nSign In"
+  },
+  {
+    "id": "TC-A80(login only)",
+    "title": "Login page has no horizontal overflow at 375px (full dashboard layout needs working auth - BLOCKED)",
+    "status": "PASS",
+    "detail": "scrollWidth overflow=false"
+  },
+  {
+    "id": "TC-A89(partial)",
+    "title": "Console errors observed during the above admin checks",
+    "status": "FAIL",
+    "detail": "Failed to load resource: the server responded with a status of 404 (Not Found) | Failed to load resource: the server responded with a status of 404 (Not Found) | Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+]

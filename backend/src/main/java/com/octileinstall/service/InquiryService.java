@@ -4,6 +4,7 @@ import com.octileinstall.dto.InquiryCreateRequest;
 import com.octileinstall.dto.InquiryDTO;
 import com.octileinstall.dto.InquiryUpdateRequest;
 import com.octileinstall.dto.PagedResponse;
+import com.octileinstall.dto.PublicInquiryCreateRequest;
 import com.octileinstall.entity.Inquiry;
 import com.octileinstall.entity.User;
 import com.octileinstall.exception.NotFoundException;
@@ -63,6 +64,27 @@ public class InquiryService {
         inquiry.setMessage(request.getMessage());
         inquiry.setCreatedByUser(creator);
         // status defaults to NEW via the entity's field initializer
+
+        return InquiryDTO.from(inquiryRepository.save(inquiry));
+    }
+
+    /**
+     * Creates an inquiry from the public quote form (PublicInquiryController) - the
+     * unauthenticated counterpart to {@link #create}. There is no staff member to record as
+     * {@code createdByUser}, so it's left null rather than requiring a lookup like the
+     * authenticated path does. Callers are responsible for the honeypot check and rate
+     * limiting before reaching this method; it unconditionally persists.
+     */
+    @Transactional
+    public InquiryDTO createPublic(PublicInquiryCreateRequest request) {
+        Inquiry inquiry = new Inquiry();
+        inquiry.setCustomerName(request.getCustomerName());
+        inquiry.setCustomerEmail(request.getCustomerEmail());
+        inquiry.setCustomerPhone(request.getCustomerPhone());
+        inquiry.setProjectType(request.getProjectType());
+        inquiry.setCity(request.getCity());
+        inquiry.setMessage(request.getMessage());
+        // createdByUser stays null; status defaults to NEW via the entity's field initializer.
 
         return InquiryDTO.from(inquiryRepository.save(inquiry));
     }
